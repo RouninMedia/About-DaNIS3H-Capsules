@@ -271,7 +271,7 @@ $Test_Script_JSON = '[
                 "Control" : "Statements",
                 "Statements" : [
                     
-                  "window.history.pushState({action : \'logout\'}, document.title, window.location.href.split(\'?\')[0] + \'?action=logout\')"
+                  "window.history.pushState({action : \'logout-confirm\'}, document.title, window.location.href.split(\'?\')[0] + \'?action=logout-confirm\')"
                 ]
               },
 
