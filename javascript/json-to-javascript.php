@@ -538,150 +538,162 @@ $Test_Script_JSON = '[
 ]';
 
 
-function buildScript($Script_Array, $indent = 0) {
+// FUNCTION :: BUILD SCRIPT
+function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
   $scriptString = '';
 
   for ($h = 0; $h < count($Script_Array); $h++) {
 
-    switch ($Script_Array[$h]['Control']) {
+    if (array_key_exists('Control', $Script_Array[$h])) {
 
-      case ('Function') :
+      switch ($Script_Array[$h]['Control']) {
 
-        $scriptString .= "\n";
-        if ($Script_Array[$h]['Name'] !== '') {$scriptString .= 'const '.$Script_Array[$h]['Name'].' = ';}
-        $scriptString .= '(';
-        $scriptString .= implode(',', $Script_Array[$h]['Parameters']);
-        $scriptString .= ') =>';
-        break;
+        case ('Function') :
+
+          $scriptString .= "\n";
+          if ($Script_Array[$h]['Name'] !== '') {$scriptString .= 'const '.$Script_Array[$h]['Name'].' = ';}
+          $scriptString .= '(';
+          $scriptString .= implode(',', $Script_Array[$h]['Parameters']);
+          $scriptString .= ') =>';
+          break;
 
 
-      case ('If') :
-      case ('Else_If') :
+        case ('If') :
+        case ('Else_If') :
 
-        $controlWord = ($Script_Array[$h]['Control'] === 'If') ? 'if' : 'else if';
-        $scriptString .= "\n".indent($indent).$controlWord.' (';
+          $controlWord = ($Script_Array[$h]['Control'] === 'If') ? 'if' : 'else if';
+          $scriptString .= "\n".indent($indent).$controlWord.' (';
 
-        if (count($Script_Array[$h]['Conditions']) > 1) {
+          if (count($Script_Array[$h]['Conditions']) > 1) {
             
-          for ($i = 0; $i < count($Script_Array[$h]['Conditions']); $i++) {
+            for ($i = 0; $i < count($Script_Array[$h]['Conditions']); $i++) {
                 
-            if ($i > 0) {$scriptString .= ' '.$Script_Array[$h]['Operator'].' ';}
-            $scriptString .= '('.$Script_Array[$h]['Conditions'][$i].')';
-          }
-        }
-
-        else {$scriptString .= $Script_Array[$h]['Conditions'][0];}
-        $scriptString .= ')';
-
-        break;
-
-
-      case ('Else') :
-
-        $scriptString .= "\n".indent($indent).'else';
-
-        break;
-
-
-      case ('Statements') :
-
-        for ($i = 0; $i < count($Script_Array[$h]['Statements']); $i++) {$scriptString .= indent($indent).$Script_Array[$h]['Statements'][$i].';'."\n";}
-
-        break;
-
-
-      case ('Event_Listener') :
-
-        $scriptString .= indent($indent).$Script_Array[$h]['Event_Target'];
-        $scriptString .= (($Script_Array[$h]['Event_Target'] === 'window') && ($Script_Array[$h]['Event_Type'] === 'load')) ? '_' : '.';
-        $scriptString .= 'addEventListener(\''.$Script_Array[$h]['Event_Type'].'\', ';
-        if ($Script_Array[$h]['Event_Callback_Name'] !== '') {$scriptString .= $Script_Array[$h]['Event_Callback_Name'];}
-        else {$scriptString .= buildScript($Script_Array[$h]['Control_Function'], $indent);}
-        $scriptString .= ', ';
-        $scriptString .= ($Script_Array[$h]['Event_useCapture'] === FALSE) ? 'false' : 'true';
-        $scriptString .= ');'."\n";
-
-        break;
-
-
-      case ('Set_Timeout') :
-      case ('Set_Interval') :
-
-        $scriptString .= "\n";
-        $controlWord = ($Script_Array[$h]['Control'] === 'Set_Timeout') ? 'setTimeout' : 'setInterval';
-        $scriptString .= indent($indent).$controlWord.'(';
-        if ($Script_Array[$h]['Callback_Name'] !== '') {$scriptString .= $Script_Array[$h]['Callback_Name'];}
-        else {$scriptString .= buildScript($Script_Array[$h]['Control_Function'], $indent);}
-        $scriptString .= ', '.$Script_Array[$h]['Time'].');'."\n";
-
-        break;
-
-
-      case ('Switch_Case') :
-
-        $scriptString .= "\n";
-        $scriptString .= 'switch ('.$Script_Array[$h]['Control_Expression'].')';
-
-        break;
-
-
-      case ('Switch_Cases') :
-
-        for ($i = 0; $i < count($Script_Array[$h]['Switch_Cases']); $i++) {
-
-          $scriptString .= "\n\n".indent($indent).'case (';
-
-          if (count($Script_Array[$h]['Switch_Cases'][$i]['Case']) > 1) {
-            
-            for ($j = 0; $j < count($Script_Array[$h]['Switch_Cases'][$i]['Case']); $j++) {
-                
-              if ($j > 0) {$scriptString .= ' '.$Script_Array[$h]['Switch_Cases'][$i]['Operator'].' ';}
-
-              $scriptString .= '('.$Script_Array[$h]['Switch_Cases'][$i]['Case'][$j].')';
+              if ($i > 0) {$scriptString .= ' '.$Script_Array[$h]['Operator'].' ';}
+              $scriptString .= '('.$Script_Array[$h]['Conditions'][$i].')';
             }
           }
 
-          else {
+          else {$scriptString .= $Script_Array[$h]['Conditions'][0];}
+          $scriptString .= ')';
 
-            $scriptString .= $Script_Array[$h]['Switch_Cases'][$i]['Case'][0];
+          break;
+
+
+        case ('Else') :
+
+          $scriptString .= "\n".indent($indent).'else';
+
+          break;
+
+
+        case ('Statements') :
+
+          for ($i = 0; $i < count($Script_Array[$h]['Statements']); $i++) {$scriptString .= indent($indent).$Script_Array[$h]['Statements'][$i].';'."\n";}
+
+          break;
+
+
+        case ('Event_Listener') :
+
+          $scriptString .= indent($indent).$Script_Array[$h]['Event_Target'];
+          $scriptString .= (($Script_Array[$h]['Event_Target'] === 'window') && ($Script_Array[$h]['Event_Type'] === 'load')) ? '_' : '.';
+          $scriptString .= 'addEventListener(\''.$Script_Array[$h]['Event_Type'].'\', ';
+          if ($Script_Array[$h]['Event_Callback_Name'] !== '') {$scriptString .= $Script_Array[$h]['Event_Callback_Name'];}
+          else {$scriptString .= buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent);}
+          $scriptString .= ', ';
+          $scriptString .= ($Script_Array[$h]['Event_useCapture'] === FALSE) ? 'false' : 'true';
+          $scriptString .= ');'."\n";
+
+          break;
+
+
+        case ('Set_Timeout') :
+        case ('Set_Interval') :
+
+          $scriptString .= "\n";
+          $controlWord = ($Script_Array[$h]['Control'] === 'Set_Timeout') ? 'setTimeout' : 'setInterval';
+          $scriptString .= indent($indent).$controlWord.'(';
+          if ($Script_Array[$h]['Callback_Name'] !== '') {$scriptString .= $Script_Array[$h]['Callback_Name'];}
+          else {$scriptString .= buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent);}
+          $scriptString .= ', '.$Script_Array[$h]['Time'].');'."\n";
+
+          break;
+
+
+        case ('Switch_Case') :
+
+          $scriptString .= "\n";
+          $scriptString .= 'switch ('.$Script_Array[$h]['Control_Expression'].')';
+
+          break;
+
+
+        case ('Switch_Cases') :
+
+          for ($i = 0; $i < count($Script_Array[$h]['Switch_Cases']); $i++) {
+
+            $scriptString .= "\n\n".indent($indent).'case (';
+
+            if (count($Script_Array[$h]['Switch_Cases'][$i]['Case']) > 1) {
+              
+              for ($j = 0; $j < count($Script_Array[$h]['Switch_Cases'][$i]['Case']); $j++) {
+                  
+                if ($j > 0) {$scriptString .= ' '.$Script_Array[$h]['Switch_Cases'][$i]['Operator'].' ';}
+
+                $scriptString .= '('.$Script_Array[$h]['Switch_Cases'][$i]['Case'][$j].')';
+              }
+            }
+
+            else {
+
+              $scriptString .= $Script_Array[$h]['Switch_Cases'][$i]['Case'][0];
+            }
+
+            $scriptString .= ') :'."\n";
+              
+            for ($j = 0; $j < count($Script_Array[$h]['Switch_Cases'][$i]['Statements']); $j++) {
+
+              $scriptString .= "\n".indent($indent).'  '.$Script_Array[$h]['Switch_Cases'][$i]['Statements'][$j].';';
+            }
+
+            if ($Script_Array[$h]['Switch_Cases'][$i]['Break'] === TRUE) {$scriptString .= "\n".indent($indent).'  break;';}
           }
 
-          $scriptString .= ') :'."\n";
-            
-          for ($j = 0; $j < count($Script_Array[$h]['Switch_Cases'][$i]['Statements']); $j++) {
+          if ($Script_Array[$h]['Switch_Default'] !== '') {
 
-            $scriptString .= "\n".indent($indent).'  '.$Script_Array[$h]['Switch_Cases'][$i]['Statements'][$j].';';
+            $scriptString .= "\n\n".indent($indent).'default : '.$Script_Array[$h]['Switch_Default'].';';
           }
 
-          if ($Script_Array[$h]['Switch_Cases'][$i]['Break'] === TRUE) {$scriptString .= "\n".indent($indent).'  break;';}
-        }
+          break;
 
-        if ($Script_Array[$h]['Switch_Default'] !== '') {
+        case ('Comment') :
 
-          $scriptString .= "\n\n".indent($indent).'default : '.$Script_Array[$h]['Switch_Default'].';';
-        }
+          switch ($Script_Array[$h]['Comment_Type']) {
 
-        break;
+            case ('sameLine') : $scriptString .= "/// ".$Script_Array[$h]['Comment'][0]; break;
+            case ('singleLine') : $scriptString .= "\n\n".indent($indent)."// ".$Script_Array[$h]['Comment'][0]."\n\n"; break;
+            case ('multiLine') : $scriptString .= "\n\n/*\n\n".implode("\n", $Script_Array[$h]['Comment'])."\n\n*/\n\n"; break;
+          }
 
-      case ('Comment') :
+          break;
 
-        switch ($Script_Array[$h]['Comment_Type']) {
+        default :
 
-          case ('sameLine') : $scriptString .= "/// ".$Script_Array[$h]['Comment'][0]; break;
-          case ('singleLine') : $scriptString .= "\n\n".indent($indent)."// ".$Script_Array[$h]['Comment'][0]."\n\n"; break;
-          case ('multiLine') : $scriptString .= "\n\n/*\n\n".implode("\n", $Script_Array[$h]['Comment'])."\n\n*/\n\n"; break;
-        }
-
-        break;
+          $scriptString .= indent($indent).'// Ashiva Console: Unknown Javascript Control "'.$Script_Array[$h]['Control'].'" in '.txt($Module_Info['Name']).' Module by '.txt($Module_Info['Publisher']);
+      }
     }
 
+    else {
+
+      $scriptString .= "\n".indent($indent).'// Ashiva Console: Javascript Control Missing in '.txt($Module_Info['Name']).' Module by '.txt($Module_Info['Publisher'])."\n";
+    }
 
     if (array_key_exists('Block', $Script_Array[$h])) {
 
       $scriptString .= ' {'."\n\n";
       $indent++;
-      $scriptString .= buildScript($Script_Array[$h]['Block'], $indent);
+      $scriptString .= buildScript($Script_Array[$h]['Block'], $Module_Info, $indent);
       $indent--;
       $scriptString .= "\n".indent($indent).'}'."\n\n";
     }
@@ -691,7 +703,9 @@ function buildScript($Script_Array, $indent = 0) {
 }
 
 
-function createScript($Script_JSON) {
+
+// FUNCTION :: CREATE SCRIPT
+function createScript($Script_JSON, $Module_Info) {
 
   function indent($indent) {
 
@@ -703,7 +717,7 @@ function createScript($Script_JSON) {
   }
 
   $Script_Array = json_decode($Script_JSON, TRUE);
-  $scriptString = buildScript($Script_Array);
+  $scriptString = buildScript($Script_Array, $Module_Info);
 
   $scriptString = preg_replace("/\s*\n\s*\n(\s*\})/", "\n$1", $scriptString);
   $scriptString = preg_replace("/\n{3,}/", "\n\n", $scriptString);
@@ -717,6 +731,36 @@ function createScript($Script_JSON) {
   return $scriptString;
 }
 
+
+// FUNCTION :: GET SCRIPTS
+function getScripts($Modules) {
+
+  $Script = '';
+  $Script .= '"use strict";'."\n\n\n";
+
+  foreach ($Modules['Scripts'] as $Module_Name => $Module_Scriptsheet) {
+
+    $Module_Publisher = $Modules['Register'][$Module_Name]['Publisher'];
+    $Module_Set = str_replace('::', '°', $Module_Name);
+
+    if ($Module_Name === 'SB_Customer') {
+
+      $Module_Info['Name'] = $Module_Name;
+      $Module_Info['Publisher'] = $Module_Publisher;
+
+      $Module_Scriptsheet = createScript($Module_Scriptsheet, $Module_Info);
+    }
+
+
+    $Script .= '  //*'.str_repeat('*', (strlen($Module_Name) + strlen($Module_Publisher) + 13)).'*//'."\n";
+    $Script .= ' //* '.strtoupper(txt($Module_Name)).' MODULE by '.strtoupper(txt($Module_Publisher)).' *//'."\n";
+    $Script .= '//*'.str_repeat('*', (strlen($Module_Name) + strlen($Module_Publisher) + 13)).'*//'."\n\n";
+    $Script .= $Module_Scriptsheet;
+    $Script .=  "\n\n\n\n";
+  }
+
+  return $Script;
+}
 
 $Test_String = createScript($Test_Script_JSON);
 
