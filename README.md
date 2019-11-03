@@ -1,6 +1,6 @@
 # DASSSH Modules
 
-**DASSSH** is a project which translates all core front-end technologies (HTML5, CSS3, Javascript and SVG) into and out of **JSON**.
+**DASSSH** is a project which translates all core front-end technologies (HTML5, CSS3, Javascript and SVG) into **JSON**.
 
 **DASSSH** stands for *DATA AND SCRIPTS, STYLES, SVG & HTML*.
 
