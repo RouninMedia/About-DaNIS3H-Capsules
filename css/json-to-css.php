@@ -10,7 +10,9 @@ function getStyles($Modules) {
     $Module_Set = str_replace('::', '°', $Module_Name);
     $Module_Stylesheet = json_decode($Module_Stylesheet, TRUE);
 
-    $Stylesheet .= '/* '.strtoupper($Module_Name).' by '.strtoupper(txt($Module_Publisher)).' */'."\n\n";
+    $Stylesheet .= '  //*'.str_repeat('*', (strlen($Module_Name) + strlen($Module_Publisher) + 13)).'*//'."\n";
+    $Stylesheet .= ' //* '.strtoupper(txt($Module_Name)).' MODULE by '.strtoupper(txt($Module_Publisher)).' *//'."\n";
+    $Stylesheet .= '//*'.str_repeat('*', (strlen($Module_Name) + strlen($Module_Publisher) + 13)).'*//'."\n\n";
 
     for ($i = 0; $i < count($Module_Stylesheet); $i++) {
 
@@ -22,9 +24,11 @@ function getStyles($Modules) {
         if ($Module_Stylesheet[$i]['@Rule']['Type'] === 'keyframes') {
 
           $Stylesheet .= $Module_Stylesheet[$i]['@Rule']['Animation Name'];
-          $Stylesheet .= ' {'."\n\n";
+          $Stylesheet .= ' {'."\n";
 
           for ($j = 0; $j < count($Module_Stylesheet[$i]['@Rule']['Animation Sequence']); $j++) {
+
+          	$Stylesheet .= "\n".'  ';
 
             for ($k = 0; $k < count($Module_Stylesheet[$i]['@Rule']['Animation Sequence'][$j]['Frames']); $k++) {
 
@@ -32,19 +36,19 @@ function getStyles($Modules) {
               if ($k < (count($Module_Stylesheet[$i]['@Rule']['Animation Sequence'][$j]['Frames']) - 1)) {$Stylesheet .= ', ';}
             }
           
-            $Stylesheet .= ' {'."\n\n";
+            $Stylesheet .= ' {'."\n";
 
               $Styles = $Module_Stylesheet[$i]['@Rule']['Animation Sequence'][$j]['Styles'];
 
               foreach ($Styles as $Property => $Value) {
 
-                $Stylesheet .= '  '.$Property.': '.$Value.';'."\n";
+                $Stylesheet .= '    '.$Property.': '.$Value.';'."\n";
               }
 
-            $Stylesheet .= '}'."\n\n";
+            $Stylesheet .= '  }'."\n";
           }
 
-          $Stylesheet .= '  }'."\n\n";
+          $Stylesheet .= '}'."\n\n";
         }
 
         else if ($Module_Stylesheet[$i]['@Rule']['Type'] === 'media') {
@@ -56,7 +60,7 @@ function getStyles($Modules) {
             if ($j < (count($Module_Stylesheet[$i]['@Rule']['Directives']) - 1)) {$Stylesheet .= ','."\n";}
           }
 
-          $Stylesheet .= ' {'."\n\n";
+          $Stylesheet .= ' {'."\n";
 
           for ($j = 0; $j < count($Module_Stylesheet[$i]['@Rule']['Rules']); $j++) {
 
@@ -70,7 +74,7 @@ function getStyles($Modules) {
               $Selector = $Selectors[$k];
               $Selector = str_replace('.', '.'.$Namespace, $Selector);
               $Selector = str_replace('#', '#'.$Namespace, $Selector);
-              $Stylesheet .= $Selector;
+              $Stylesheet .= "\n".'  '.$Selector;
             }
 
             $Stylesheet .= ' {'."\n";
@@ -79,10 +83,10 @@ function getStyles($Modules) {
 
             foreach ($Styles as $Property => $Value) {
 
-              $Stylesheet .= '  '.$Property.': '.$Value.';'."\n";
+              $Stylesheet .= '    '.$Property.': '.$Value.';'."\n";
             }
 
-            $Stylesheet .= '  }'."\n\n";
+            $Stylesheet .= '  }'."\n";
           }
 
           $Stylesheet .= '}'."\n\n";
@@ -123,5 +127,5 @@ function getStyles($Modules) {
 
   return $Stylesheet;
 }
-
+          
 ?>
