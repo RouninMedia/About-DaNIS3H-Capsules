@@ -82,7 +82,7 @@ const renderMarkup = (moduleMarkupJSON, moduleName, modulePublisher) => {
           markup += escapeHtml(element[i]['plainText']);
         }
   
-        else {
+        else if (element[i].hasOwnProperty('element')) {
 
           markup += '<' + element[i]['element'];
 
@@ -133,6 +133,11 @@ const renderMarkup = (moduleMarkupJSON, moduleName, modulePublisher) => {
             markup += extractMarkup(element[i]['elementChildren'], nameSpace);
             markup += '</' + element[i]['element'] + '>';
           }
+        }
+
+        else {
+
+          markup += '<!-- Ashiva Console: HTML Element Missing in ' + url(moduleName) + 'by' + cml(modulePublisher) + ' -->';
         }
       }
     }
