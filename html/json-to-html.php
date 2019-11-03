@@ -31,7 +31,7 @@ function renderMarkup($Element, $Module_Set, $Module_Publisher) {
         $Markup .= htmlspecialchars($Element[$i]['plainText']);
       }
   
-      else {
+      elseif (isset($Element[$i]['element'])) {
 
         $Markup .= '<'.$Element[$i]['element'];
 
@@ -77,6 +77,11 @@ function renderMarkup($Element, $Module_Set, $Module_Publisher) {
           $Markup .= renderMarkup($Element[$i]['elementChildren'], $Module_Set, $Module_Publisher);
           $Markup .= '</'.$Element[$i]['element'].'>';
         }
+      }
+
+      else {
+
+        $Markup .= '<!-- Ashiva Console: HTML Element Missing in '.txt($Module_Set).' by '.txt($Module_Publisher).' -->';
       }
     }
   }
