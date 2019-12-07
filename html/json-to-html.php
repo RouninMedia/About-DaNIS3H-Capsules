@@ -81,7 +81,7 @@ function renderMarkup($Element, $Module_Set, $Module_Publisher) {
 
       else {
 
-        $Markup .= '<!-- Ashiva Console: HTML Element Missing in '.txt($Module_Set).' by '.txt($Module_Publisher).' -->';
+        $Markup .= '<!-- ⚠️ Ashiva Console: HTML Element Missing in '.txt($Module_Set).' by '.txt($Module_Publisher).' -->';
       }
     }
   }
@@ -98,7 +98,7 @@ function getMarkup($Module, $Context = 'page', $Chapter = NULL) {
 
   if ($Context === 'element') {
 
-    $Module_Markup = json_decode($Module['Source'], TRUE);
+    $Module_Markup = json_decode($Module['Content'], TRUE);
   }
 
   elseif ($Context === 'page') {
@@ -107,7 +107,7 @@ function getMarkup($Module, $Context = 'page', $Chapter = NULL) {
     $Module_Markup[0]['attributes']['data-ashiva-module'] = $Module_Set;
     $Module_Markup[0]['attributes']['data-ashiva-publisher'] = cml($Module['Publisher']);
 
-    $Markup = $Module['Source'];
+    $Markup = $Module['Content'];
 
     // NOT SURE WHAT IS GOING ON IMMEDIATELY BELOW?
 
