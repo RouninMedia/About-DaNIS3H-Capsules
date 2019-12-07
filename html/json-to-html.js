@@ -137,7 +137,7 @@ const renderMarkup = (moduleMarkupJSON, moduleName, modulePublisher) => {
 
         else {
 
-          markup += '<!-- Ashiva Console: HTML Element Missing in ' + url(moduleName) + 'by' + cml(modulePublisher) + ' -->';
+          markup += '<!-- ⚠️ Ashiva Console: HTML Element Missing in ' + url(moduleName) + 'by' + cml(modulePublisher) + ' -->';
         }
       }
     }
