@@ -562,13 +562,23 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
         case ('Function') :
 
-          $scriptString .= "\n";
-          if ($Script_Array[$h]['Name'] !== '') {$scriptString .= 'const '.$Script_Array[$h]['Name'].' = ';}
-          $scriptString .= '(';
-          $scriptString .= implode(', ', $Script_Array[$h]['Parameters']);
-          $scriptString .= ') =>';
-          break;
+          $scriptString .= "\n".indent($indent);
 
+          if ($Script_Array[$h]['Function_Expression'] === TRUE) {
+
+            $scriptString .= 'function ';
+            if ($Script_Array[$h]['Name'] !== '') {$scriptString .= $Script_Array[$h]['Name'];}
+            $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') ';
+          }
+
+          else {
+
+            if ($Script_Array[$h]['Name'] !== '') {$scriptString .= 'const '.$Script_Array[$h]['Name'].' = ';}
+            $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') =>';
+          }
+          
+          break;
+          
 
         case ('If') :
         case ('Else_If') :
