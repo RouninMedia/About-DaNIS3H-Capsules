@@ -9,7 +9,7 @@
 **Ashiva Modules** *are* **DaSSSH Modules**. Each contain (in a single block of JSON) one, several or all of the following:
 
 1) *Data*
-2) *Scripts (**Javascript**)*
+2) *Scripts (**Javascript** or **PHP**)*
 3) *Styles (**CSS**)*
 4) ***SVG** Vectors*
 5) ***HTML** Markup*
