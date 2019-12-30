@@ -552,6 +552,8 @@ function indent($indent) {
 // FUNCTION :: BUILD SCRIPT
 function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
+  $Termination_Map[$indent] = FALSE;
+
   $scriptString = '';
 
   for ($h = 0; $h < count($Script_Array); $h++) {
@@ -564,21 +566,55 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
           $scriptString .= "\n".indent($indent);
 
-          if ($Script_Array[$h]['Function_Expression'] === TRUE) {
+          if (array_key_exists('Function_Expression', $Script_Array[$h]) && ($Script_Array[$h]['Function_Expression'] === TRUE)) {
+
+            $Termination_Map[$indent] = TRUE;
+
+            if ($Script_Array[$h]['Name'] !== '') {$scriptString .= 'const '.$Script_Array[$h]['Name'].' = ';}
+            $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') =>';
+          }
+
+          else {
 
             $scriptString .= 'function ';
             if ($Script_Array[$h]['Name'] !== '') {$scriptString .= $Script_Array[$h]['Name'];}
             $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') ';
           }
-
-          else {
-
-            if ($Script_Array[$h]['Name'] !== '') {$scriptString .= 'const '.$Script_Array[$h]['Name'].' = ';}
-            $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') =>';
-          }
           
           break;
-          
+
+
+        case ('Loop') :
+
+          $scriptString .= "\n".indent($indent);
+
+          switch ($Script_Array[$h]['Type']) {
+
+            case ('For') :
+
+              $scriptString .= 'for ('.$Script_Array[$h]['Header'].')';
+              break;
+
+            case ('While') :
+
+              $scriptString .= 'while (';
+
+              if (count($Script_Array[$h]['Conditions']) > 1) {
+            
+                for ($i = 0; $i < count($Script_Array[$h]['Conditions']); $i++) {
+                
+                  if ($i > 0) {$scriptString .= ' '.$Script_Array[$h]['Operator'].' ';}
+                  $scriptString .= '('.$Script_Array[$h]['Conditions'][$i].')';
+                }
+              }
+
+              else {$scriptString .= $Script_Array[$h]['Conditions'][0];}
+              $scriptString .= ')';
+              break;
+          }
+
+          break;
+
 
         case ('If') :
         case ('Else_If') :
@@ -697,7 +733,7 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
           switch ($Script_Array[$h]['Comment_Type']) {
 
-            case ('sameLine') : $scriptString .= "/// ".$Script_Array[$h]['Comment'][0]; break;
+            case ('sameLine') : $scriptString .= "/// ".$Script_Array[$h]['Comment'][0]."\n"; break;
             case ('singleLine') : $scriptString .= "\n\n".indent($indent)."// ".$Script_Array[$h]['Comment'][0]."\n\n"; break;
             case ('multiLine') : $scriptString .= "\n\n".indent($indent)."/*\n\n".indent($indent).implode("\n".indent($indent), $Script_Array[$h]['Comment'])."\n\n".indent($indent)."*/\n\n"; break;
           }
@@ -721,7 +757,15 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
       $indent++;
       $scriptString .= buildScript($Script_Array[$h]['Block'], $Module_Info, $indent);
       $indent--;
-      $scriptString .= "\n".indent($indent).'}'."\n\n";
+      $scriptString .= "\n".indent($indent).'}';
+
+      if ($Termination_Map[$indent] === TRUE) {
+
+        $scriptString .= ';';
+        $Termination_Map[$indent] = FALSE;
+      }
+
+      $scriptString .= "\n\n";
     }
   }
 
@@ -735,6 +779,7 @@ function createScript($Script_JSON, $Module_Info) {
   $Script_Array = json_decode($Script_JSON, TRUE);
   $scriptString = buildScript($Script_Array, $Module_Info);
 
+  $scriptString = preg_replace("/\;\s*\,/", ",", $scriptString);
   $scriptString = preg_replace("/\s*\n\s*\n(\s*\})/", "\n$1", $scriptString);
   $scriptString = preg_replace("/\n{3,}/", "\n\n", $scriptString);
   $scriptString = preg_replace("/\(\s*\n\s*\(/", "((", $scriptString);
@@ -743,6 +788,8 @@ function createScript($Script_JSON, $Module_Info) {
   $scriptString = preg_replace("/\n+\/\/\//", " ///", $scriptString);
   $scriptString = preg_replace("/\n{2}([\s]*\/\/\s{1})/", "\n\n\n\n$1", $scriptString);
   $scriptString = preg_replace("/^\s+([^\w])/", "$1", $scriptString);
+  $scriptString = preg_replace("/new Worker\(([^\)]*)\)/", "new_Worker($1, {moduleName : '".url($Module_Info['Name'])."', modulePublisher : '".url($Module_Info['Publisher'])."'})", $scriptString);
+  $scriptString = preg_replace("/new_Worker\(\'([^\']+)\'\,\s*\{([^\}]+)\}\,\s*\{([^\}]+)\}\)/", "new_Worker('$1', {\$3, \$2})", $scriptString);
 
   return $scriptString;
 }
