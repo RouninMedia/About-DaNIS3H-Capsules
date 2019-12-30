@@ -258,9 +258,8 @@ function renderScript(scriptJSON, moduleInfo = {name: 'moduleName', publisher: '
     scriptString = scriptString.replace(/\n+\/\/\//g, " ///");
     scriptString = scriptString.replace(/\n{2}([\s]*\/\/\s{1})/g, "\n\n\n\n$1");
     scriptString = scriptString.replace(/^\s+([^\w])/g, "$1");
-    scriptString = scriptString.replace(/new Worker\(([^\)]*)\)/g, "new_Worker($1, {moduleName : '" + url(moduleInfo.name) + "', modulePublisher : '" + url(moduleInfo.publisher) + "'})");
-    scriptString = scriptString.replace(/new_Worker\(\'([^\']+)\'\,\s*\{([^\}]+)\}\,\s*\{([^\}]+)\}\)/g, "new_Worker('$1', {$3, $2})");
-
+    scriptString = scriptString.replace(/new Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/g, "new_Worker($2{workerName: '$1', moduleName: '" + url(moduleInfo.name) + "', modulePublisher: '" + url(moduleInfo.publisher) + "'})");
+    scriptString = scriptString.replace(/new_Worker\(\{([^\}]+)\}\{([^\}]+)\}\)/g, "new_Worker({\$2, \$1})");
     return scriptString;
   }
    
