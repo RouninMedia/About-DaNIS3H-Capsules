@@ -4,7 +4,7 @@
  // DA3SH MODULES :: RENDER SCRIPTS //
 //*********************************//
 
-function renderScript(scriptJSON, moduleInfo = {name: 'moduleName', publisher: 'modulePublisher'}) {
+function renderScript(scriptJSON, moduleInfo = {name: 'moduleName', publisher: 'modulePublisher'}, codePanel = false) {
 
   // FUNCTION :: INDENT
   const indent = (indentLevel) => {
@@ -244,7 +244,7 @@ function renderScript(scriptJSON, moduleInfo = {name: 'moduleName', publisher: '
   
   
   // FUNCTION :: CREATE SCRIPT
-  function createScript(scriptJSON, moduleInfo) {
+  function createScript(scriptJSON, moduleInfo, codePanel) {
   
     let scriptArray = JSON.parse(scriptJSON);
     let scriptString = buildScript(scriptArray, moduleInfo);
@@ -258,10 +258,15 @@ function renderScript(scriptJSON, moduleInfo = {name: 'moduleName', publisher: '
     scriptString = scriptString.replace(/\n+\/\/\//g, " ///");
     scriptString = scriptString.replace(/\n{2}([\s]*\/\/\s{1})/g, "\n\n\n\n$1");
     scriptString = scriptString.replace(/^\s+([^\w])/g, "$1");
-    scriptString = scriptString.replace(/new Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/g, "new_Worker($2{workerName: '$1', moduleName: '" + url(moduleInfo.name) + "', modulePublisher: '" + url(moduleInfo.publisher) + "'})");
-    scriptString = scriptString.replace(/new_Worker\(\{([^\}]+)\}\{([^\}]+)\}\)/g, "new_Worker({\$2, \$1})");
+    
+    if (codePanel !== true) {
+    
+      scriptString = scriptString.replace(/new[\s|_]Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/g, "new_Worker($2{workerName: '$1', moduleName: '" + url(moduleInfo.name) + "', modulePublisher: '" + url(moduleInfo.publisher) + "'})");
+      scriptString = scriptString.replace(/new_Worker\(\{([^\}]+)\}\{([^\}]+)\}\)/g, "new_Worker({\$2, \$1})");
+    }
+    
     return scriptString;
   }
    
-  return createScript(scriptJSON, moduleInfo);
+  return createScript(scriptJSON, moduleInfo, codePanel);
 }
