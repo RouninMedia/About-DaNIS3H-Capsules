@@ -774,7 +774,7 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
 
 // FUNCTION :: CREATE SCRIPT
-function createScript($Script_JSON, $Module_Info) {
+function createScript($Script_JSON, $Module_Info, $Code_Panel = FALSE) {
 
   $Script_Array = json_decode($Script_JSON, TRUE);
   $scriptString = buildScript($Script_Array, $Module_Info);
@@ -788,8 +788,13 @@ function createScript($Script_JSON, $Module_Info) {
   $scriptString = preg_replace("/\n+\/\/\//", " ///", $scriptString);
   $scriptString = preg_replace("/\n{2}([\s]*\/\/\s{1})/", "\n\n\n\n$1", $scriptString);
   $scriptString = preg_replace("/^\s+([^\w])/", "$1", $scriptString);
-  $scriptString = preg_replace("/new Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/", "new_Worker($2{workerName: '$1', moduleName: '".url($Module_Info['Name'])."', modulePublisher: '".url($Module_Info['Publisher'])."'})", $scriptString);
-  $scriptString = preg_replace("/new_Worker\(\{([^\}]+)\}\{([^\}]+)\}\)/", "new_Worker({\$2, \$1})", $scriptString);  
+
+  if ($Code_Panel !== TRUE) {
+  
+    $scriptString = preg_replace("/new[\s|_]Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/", "new_Worker($2{workerName: '$1', moduleName: '".url($Module_Info['Name'])."', modulePublisher: '".url($Module_Info['Publisher'])."'})", $scriptString);
+    $scriptString = preg_replace("/new_Worker\(\{([^\}]+)\}\{([^\}]+)\}\)/", "new_Worker({\$2, \$1})", $scriptString);
+  }
+
   return $scriptString;
 }
 
