@@ -3,7 +3,11 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$Test_Script_JSON = '[
+$Test_Script_JSON = '
+*** UPDATE SB-CUSTOMER-SCRIPTS ***
+
+
+[
   {
     "Control" : "Comment",
     "Comment_Type" : "singleLine",
@@ -44,6 +48,7 @@ $Test_Script_JSON = '[
 
   {
     "Control" : "Function",
+    "Function_Expression" : true,
     "Name" : "responsiveDesign",
     "Parameters" : [],
     "Block" : [
@@ -79,9 +84,9 @@ $Test_Script_JSON = '[
                 "Control" : "Statements",
                 "Statements" : [
 
-                  "header.style.boxShadow = \'0 6px 6px rgba(0,0,0,0.5)\'",
-                  "mainMenu.style.boxShadow = \'-2px 2px 2px rgba(0,0,0,0.5)\'",
-                  "customerActionBar.style.boxShadow = \'0 -6px 6px rgba(0,0,0,0.5)\'"
+                  "header.style.boxShadow = '0 6px 6px rgba(0,0,0,0.5)'",
+                  "mainMenu.style.boxShadow = '-2px 2px 2px rgba(0,0,0,0.5)'",
+                  "customerActionBar.style.boxShadow = '0 -6px 6px rgba(0,0,0,0.5)'"
                 ]
               }
             ]
@@ -113,9 +118,9 @@ $Test_Script_JSON = '[
                 "Control" : "Statements",
                 "Statements" : [
 
-                  "header.removeAttribute(\'style\')",
-                  "mainMenu.removeAttribute(\'style\')",
-                  "customerActionBar.removeAttribute(\'style\')"
+                  "header.removeAttribute('style')",
+                  "mainMenu.removeAttribute('style')",
+                  "customerActionBar.removeAttribute('style')"
                 ]
               }
             ]
@@ -160,6 +165,7 @@ $Test_Script_JSON = '[
 
   {
     "Control" : "Function",
+    "Function_Expression" : true,
     "Name" : "customerActions",
     "Parameters" : ["e"],
     "Block" : [
@@ -168,7 +174,7 @@ $Test_Script_JSON = '[
         "Control" : "If",
         "Conditions" : [
           
-          "e.target.dataset.hasOwnProperty(\'loginStatus\')"
+          "e.target.dataset.hasOwnProperty('loginStatus')"
         ],
 
         "Block" : [
@@ -177,7 +183,7 @@ $Test_Script_JSON = '[
             "Control" : "Statements",
             "Statements" : [
 
-              "window.scrollTo({top: 0, left: 0, behavior: \'smooth\'})"
+              "window.scrollTo({top: 0, left: 0, behavior: 'smooth'})"
             ]
           },
 
@@ -186,7 +192,7 @@ $Test_Script_JSON = '[
             "Control" : "If",
             "Conditions" : [
           
-              "e.target.dataset.loginStatus === \'logged-out\'"
+              "e.target.dataset.loginStatus === 'logged-out'"
             ],
 
             "Block" : [
@@ -195,7 +201,7 @@ $Test_Script_JSON = '[
                 "Control" : "Statements",
                 "Statements" : [
                     
-                  "window.history.pushState({action : \'login\'}, document.title, window.location.href.split(\'?\')[0] + \'?action=login\')"
+                  "window.history.pushState({action : 'login'}, document.title, window.location.href.split('?')[0] + '?action=login')"
                 ]
               },
 
@@ -216,6 +222,7 @@ $Test_Script_JSON = '[
 
                   {
                     "Control" : "Function",
+                    "Function_Expression" : true,
                     "Name" : "",
                     "Parameters" : [],
                     "Block" : [
@@ -240,6 +247,7 @@ $Test_Script_JSON = '[
 
                   {
                     "Control" : "Function",
+                    "Function_Expression" : true,
                     "Name" : "",
                     "Parameters" : [],
                     "Block" : [
@@ -248,7 +256,7 @@ $Test_Script_JSON = '[
                         "Control" : "Statements",
                         "Statements" : [
                         
-                          "history.back()"
+                          "history.forward()"
                         ]
                       }
                     ]
@@ -262,7 +270,7 @@ $Test_Script_JSON = '[
             "Control" : "Else_If",
             "Conditions" : [
           
-              "e.target.dataset.loginStatus === \'logged-in\'"
+              "e.target.dataset.loginStatus === 'logged-in'"
             ],
 
             "Block" : [
@@ -271,7 +279,7 @@ $Test_Script_JSON = '[
                 "Control" : "Statements",
                 "Statements" : [
                     
-                  "window.history.pushState({action : \'logout-confirm\'}, document.title, window.location.href.split(\'?\')[0] + \'?action=logout-confirm\')"
+                  "window.history.pushState({action : 'logout-confirm'}, document.title, window.location.href.split('?')[0] + '?action=logout-confirm')"
                 ]
               },
 
@@ -283,6 +291,7 @@ $Test_Script_JSON = '[
 
                   {
                     "Control" : "Function",
+                    "Function_Expression" : true,
                     "Name" : "",
                     "Parameters" : [],
                     "Block" : [
@@ -307,6 +316,7 @@ $Test_Script_JSON = '[
 
                   {
                     "Control" : "Function",
+                    "Function_Expression" : true,
                     "Name" : "",
                     "Parameters" : [],
                     "Block" : [
@@ -315,7 +325,7 @@ $Test_Script_JSON = '[
                         "Control" : "Statements",
                         "Statements" : [
                         
-                          "history.back()"
+                          "history.forward()"
                         ]
                       }
                     ]
@@ -333,7 +343,7 @@ $Test_Script_JSON = '[
                 "Control" : "Statements",
                 "Statements" : [
                     
-                  "window.history.pushState({action : \'logout\'}, document.title, window.location.href.split(\'?\')[0] + \'?action=logout\')"
+                  "window.history.pushState({action : 'logout'}, document.title, window.location.href.split('?')[0] + '?action=logout')"
                 ]
               },
 
@@ -345,6 +355,7 @@ $Test_Script_JSON = '[
 
                   {
                     "Control" : "Function",
+                    "Function_Expression" : true,
                     "Name" : "",
                     "Parameters" : [],
                     "Block" : [
@@ -369,6 +380,7 @@ $Test_Script_JSON = '[
 
                   {
                     "Control" : "Function",
+                    "Function_Expression" : true,
                     "Name" : "",
                     "Parameters" : [],
                     "Block" : [
@@ -377,7 +389,7 @@ $Test_Script_JSON = '[
                         "Control" : "Statements",
                         "Statements" : [
                         
-                          "history.back()"
+                          "history.forward()"
                         ]
                       }
                     ]
@@ -395,8 +407,8 @@ $Test_Script_JSON = '[
     "Control" : "Statements",
     "Statements" : [
                     
-      "const customerActionBar = document.getElementsByClassName(\'sb-customer»by»scotiaBeauty»»»scotia-beauty-customer-action-bar\')[0]",
-      "const scotiaBeautyCustomers = document.getElementsByClassName(\'sb-customer»by»scotiaBeauty»»»scotia-beauty-customers\')[0]"
+      "const customerActionBar = document.getElementsByClassName('sb-customer»by»scotiaBeauty»»»scotia-beauty-customer-action-bar')[0]",
+      "const scotiaBeautyCustomers = document.getElementsByClassName('sb-customer»by»scotiaBeauty»»»scotia-beauty-customers')[0]"
     ]
   },
 
@@ -443,7 +455,7 @@ $Test_Script_JSON = '[
 
             "Statements" : [
             
-              "window.alert(\'This is working - a!\')"
+              "window.alert('This is working - a!')"
             ],
 
             "Break" : false
@@ -461,8 +473,8 @@ $Test_Script_JSON = '[
 
             "Statements" : [
             
-              "window.alert(\'This is working - b!\')",
-              "window.alert(\'This is working - c!\')"
+              "window.alert('This is working - b!')",
+              "window.alert('This is working - c!')"
             ],
 
             "Break" : true
@@ -481,9 +493,9 @@ $Test_Script_JSON = '[
 
             "Statements" : [
 
-              "window.alert(\'This is working - d!\')",
-              "window.alert(\'This is working - e!\')",
-              "window.alert(\'This is working - f!\')"
+              "window.alert('This is working - d!')",
+              "window.alert('This is working - e!')",
+              "window.alert('This is working - f!')"
             ],
 
             "Break" : true
@@ -491,7 +503,7 @@ $Test_Script_JSON = '[
 
         ],
 
-        "Switch_Default" : "window.alert(\'This is working - default.\')"
+        "Switch_Default" : "window.alert('This is working - default.')"
       }
     ]
   },
@@ -516,6 +528,7 @@ $Test_Script_JSON = '[
 
       {
         "Control" : "Function",
+        "Function_Expression" : true,
         "Name" : "",
         "Parameters" : [],
         "Block" : [
@@ -525,7 +538,7 @@ $Test_Script_JSON = '[
             "Control" : "Statements",
             "Statements" : [
             
-              "window.alert(\'This is also working!\')"
+              "window.alert('This is also working!')"
             ]
           }
         ]
@@ -533,8 +546,319 @@ $Test_Script_JSON = '[
     ],
 
     "Event_useCapture" : false
-  }
+  },
 
+  {
+    "Control" : "Switch_Case",
+    "Control_Expression" : "true",
+    "Cases" : [
+
+      {
+
+        "Case" : [
+
+          "caseOne"
+        ],
+
+        "Block" : [
+
+          {
+            "Control" : "Statements",
+            "Statements" : [
+      
+              "console.log('This is Case One')"
+            ]
+          }
+        ],
+
+        "Break" : true
+      },
+
+      {
+        "Case" : [
+
+          "caseTwo"
+        ],
+
+        "Block" : [
+
+          {
+            "Control" : "Statements",
+            "Statements" : [
+      
+              "console.log('This is Case Two')"
+            ]
+          }
+        ],
+
+        "Break" : true
+      }
+    ],
+
+    "Default" : "window.alert('This is the Default')"
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Type" : "Regular",
+    "Name" : "",
+    "Declared_Name" : "myFunction1",
+    "Parameters" : [],
+    "Block" : [
+
+      {
+        "Control" : "Statements",
+        "Statements" : [
+
+          "console.log('This is myFunction1 (Named Regular Function Not Assigned to Variable)')"
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Type" : "Regular",
+    "Assigner" : "var",
+    "Name" : "myFunction2",
+    "Declared_Name" : "myFunction22",
+    "Parameters" : [],
+    "Block" : [
+
+      {
+        "Control" : "Statements",
+        "Statements" : [
+
+          "console.log('This is myFunction2 (Named Regular Function Assigned to Variable)')"
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Type" : "Regular",
+    "Name" : "",
+    "Parameters" : [],
+    "Block" : [
+
+      {
+        "Control" : "Statements",
+        "Statements" : [
+
+          "console.log('This is myFunction3 (Unnamed Regular Function Not Assigned to Variable)')"
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Type" : "Regular",
+    "Assigner" : "var",
+    "Name" : "myFunction4",
+    "Parameters" : [],
+    "Block" : [
+
+      {
+        "Control" : "Statements",
+        "Statements" : [
+
+          "console.log('This is myFunction4 (Unnamed Regular Function Assigned to Variable)')"
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Name" : "",
+    "Parameters" : [],
+    "Block" : [
+
+      {
+        "Control" : "Statements",
+        "Statements" : [
+
+          "console.log('This is myFunction5 (Unnamed Arrow Function Not Assigned to Variable)')"
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Name" : "myFunction6",
+    "Parameters" : [],
+    "Block" : [
+
+      {
+        "Control" : "Statements",
+        "Statements" : [
+
+          "console.log('This is myFunction6 (Unnamed Arrow Function Assigned to Variable)')"
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Invoked" : true,
+    "Name" : "",
+    "Parameters" : [],
+    "Control_Function" : [
+
+      {
+        "Control" : "Function",
+        "Function_Type" : "Regular",
+        "Name" : "",
+        "Declared_Name" : "myFunction7",
+        "Parameters" : [],
+        "Block" : [
+
+          {
+            "Control" : "Statements",
+            "Statements" : [
+                        
+              "console.log('This is myFunction7 (IIFE using Named Regular Function, Not Assigned to Variable)')"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Invoked" : true,
+    "Assigner" : "var",
+    "Name" : "myFunction8",
+    "Parameters" : [],
+    "Control_Function" : [
+
+      {
+        "Control" : "Function",
+        "Function_Type" : "Regular",
+        "Name" : "",
+        "Declared_Name" : "myFunction8",
+        "Parameters" : [],
+        "Block" : [
+
+          {
+            "Control" : "Statements",
+            "Statements" : [
+                        
+              "console.log('This is myFunction8 (IIFE using Named Regular Function, Assigned to Variable)')"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Invoked" : true,
+    "Name" : "",
+    "Parameters" : [],
+    "Control_Function" : [
+
+      {
+        "Control" : "Function",
+        "Function_Type" : "Regular",
+        "Name" : "",
+        "Parameters" : [],
+        "Block" : [
+
+          {
+            "Control" : "Statements",
+            "Statements" : [
+                        
+              "console.log('This is myFunction9 (IIFE using Unnamed Regular Function, Not Assigned to Variable)')"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Invoked" : true,
+    "Assigner" : "var",
+    "Name" : "myFunction10",
+    "Parameters" : [],
+    "Control_Function" : [
+
+      {
+        "Control" : "Function",
+        "Function_Type" : "Regular",
+        "Name" : "",
+        "Parameters" : [],
+        "Block" : [
+
+          {
+            "Control" : "Statements",
+            "Statements" : [
+                        
+              "console.log('This is myFunction10 (IIFE using Unnamed Regular Function, Assigned to Variable)')"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Invoked" : true,
+    "Name" : "",
+    "Parameters" : [],
+    "Control_Function" : [
+
+      {
+        "Control" : "Function",
+        "Name" : "",
+        "Parameters" : [],
+        "Block" : [
+
+          {
+            "Control" : "Statements",
+            "Statements" : [
+                        
+              "console.log('This is myFunction11 (IIFE using Unnamed Arrow Function, Not Assigned to Variable)')"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    "Control" : "Function",
+    "Function_Invoked" : true,
+    "Name" : "myFunction12",
+    "Parameters" : [],
+    "Control_Function" : [
+
+      {
+        "Control" : "Function",
+        "Name" : "",
+        "Parameters" : [],
+        "Block" : [
+
+          {
+            "Control" : "Statements",
+            "Statements" : [
+
+              "console.log('This is myFunction12 (IIFE using Unnamed Arrow Function, Assigned to Variable)')"
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ]';
 
 
