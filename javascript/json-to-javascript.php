@@ -566,19 +566,68 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
           $scriptString .= "\n".indent($indent);
 
-          if (array_key_exists('Function_Expression', $Script_Array[$h]) && ($Script_Array[$h]['Function_Expression'] === TRUE)) {
+          $Assigner = (array_key_exists('Assigner', $Script_Array[$h])) ? $Script_Array[$h]['Assigner'] : 'const';
 
-            $Termination_Map[$indent] = TRUE;
-
-            if ($Script_Array[$h]['Name'] !== '') {$scriptString .= 'const '.$Script_Array[$h]['Name'].' = ';}
-            $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') =>';
+          if ((array_key_exists('Function_Invoked', $Script_Array[$h]) && ($Script_Array[$h]['Function_Invoked'] === TRUE))) {
+          
+            switch (TRUE) {
+          
+              case ((array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) && (array_key_exists('Declared_Name', $Script_Array[$h]))) :
+          
+                if ($Script_Array[$h]['Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';}
+                $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
+                break;
+          
+              case ((array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular'))) :
+                
+                if ($Script_Array[$h]['Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';}
+                $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
+                break;
+          
+              default :
+          
+                if ($Script_Array[$h]['Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';}
+                $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
+                break;
+            }
           }
-
+          
           else {
+          
+            switch (TRUE) {
 
-            $scriptString .= 'function ';
-            if ($Script_Array[$h]['Name'] !== '') {$scriptString .= $Script_Array[$h]['Name'];}
-            $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') ';
+              case ((array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) && (array_key_exists('Declared_Name', $Script_Array[$h]))) :
+                
+                if ($Script_Array[$h]['Name'] !== '') {
+
+                  $Termination_Map[$indent] = TRUE;
+                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';
+                }
+
+                $scriptString .= 'function '.$Script_Array[$h]['Declared_Name'].' ('.implode(', ', $Script_Array[$h]['Parameters']).')';
+                break;
+          
+              case (array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) :
+          
+                if ($Script_Array[$h]['Name'] !== '') {
+
+                  $Termination_Map[$indent] = TRUE;
+                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';
+                }
+
+                $scriptString .= 'function ('.implode(', ', $Script_Array[$h]['Parameters']).')';
+                break;
+          
+              default :
+          
+                if ($Script_Array[$h]['Name'] !== '') {
+
+                  $Termination_Map[$indent] = TRUE;
+                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';
+                }
+
+                $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') =>';
+            }
           }
           
           break;
@@ -788,10 +837,12 @@ function createScript($Script_JSON, $Module_Info, $Code_Panel = FALSE) {
   $scriptString = preg_replace("/\n+\/\/\//", " ///", $scriptString);
   $scriptString = preg_replace("/\n{2}([\s]*\/\/\s{1})/", "\n\n\n\n$1", $scriptString);
   $scriptString = preg_replace("/^\s+([^\w])/", "$1", $scriptString);
+  $scriptString = preg_replace("/\(\nfunction/", "(function", $scriptString);
+  $scriptString = preg_replace("/\}\n\n\)/", "})", $scriptString);
 
   if ($Code_Panel !== TRUE) {
   
-    $scriptString = preg_replace("/new[\s|_]Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/", "new_Worker($2{workerName: '$1', moduleName: '".url($Module_Info['Name'])."', modulePublisher: '".url($Module_Info['Publisher'])."'})", $scriptString);
+    $scriptString = preg_replace("/new[\s|_]Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/", "new_Worker($2{workerName: '$1', ashivaModule: '".url($Module_Info['Name'])."', ashivaPublisher: '".url($Module_Info['Publisher'])."'})", $scriptString);
     $scriptString = preg_replace("/new_Worker\(\{([^\}]+)\}\{([^\}]+)\}\)/", "new_Worker({\$2, \$1})", $scriptString);
   }
 
@@ -809,9 +860,8 @@ function getScripts($Modules) {
 
     $Module_Publisher = $Modules['Register'][$Module_Name]['Publisher'];
     $Module_Set = str_replace('::', '°', $Module_Name);
-
     
-    if (in_array($Module_Name, ['SB_Consoles', 'SB_Customer'])) {
+    if (in_array($Module_Name, ['SB_Consoles', 'SB_Customer', 'SB_Translations::EN'])) {
 
       $Module_Info['Name'] = $Module_Name;
       $Module_Info['Publisher'] = $Module_Publisher;
