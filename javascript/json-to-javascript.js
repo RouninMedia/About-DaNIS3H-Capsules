@@ -1,10 +1,8 @@
-
-
   //*********************************//
  // DA3SH MODULES :: RENDER SCRIPTS //
 //*********************************//
 
-function renderScript(scriptJSON, moduleInfo = {name: 'moduleName', publisher: 'modulePublisher'}, codePanel = false) {
+function renderScript(scriptJSON, moduleInfo = {name: 'ashivaModule', publisher: 'ashivaPublisher'}, codePanel = false) {
 
   // FUNCTION :: INDENT
   const indent = (indentLevel) => {
@@ -34,24 +32,26 @@ function renderScript(scriptJSON, moduleInfo = {name: 'moduleName', publisher: '
 
           case ('Function') :
 
+            let assigner = (scriptArray[h].hasOwnProperty('Assigner')) ? scriptArray[h]['Assigner'] : 'const';
+
             scriptString += "\n" + indent(indentLevel);
 
-            if (scriptArray[h].hasOwnProperty('Function_Expression') && (scriptArray[h]['Function_Expression'] === true)) {
+            if (scriptArray[h].hasOwnProperty('Function_Invoked') && (scriptArray[h]['Function_Invoked'] === true)) {
 
-              terminationMap[indentLevel] = true;
-
-              if (scriptArray[h]['Name'] !== '') {scriptString += 'const ' + scriptArray[h]['Name'] + ' = ';}
-              scriptString += '(' + scriptArray[h]['Parameters'].join(', ') + ') =>';
+              if (scriptArray[h]['Assigned_Name'] !== '') {scriptString += assigner + ' ' + scriptArray[h]['Assigned_Name'] + ' = ';}
+              scriptString += '(' + buildScript(scriptArray[h]['Control_Function'], moduleInfo, indentLevel) + ')();' + "\n";
             }
 
             else {
-
-              scriptString += 'function ';
-              if (scriptArray[h]['Name'] !== '') {scriptString += scriptArray[h]['Name'];}
-              scriptString += '(' + scriptArray[h]['Parameters'].join(', ') + ') ';
+                
+              if (scriptArray[h]['Assigned_Name'] !== '') {terminationMap[indentLevel] = true; scriptString += assigner + ' ' + scriptArray[h]['Assigned_Name'] + ' = ';}
+              if ((scriptArray[h].hasOwnProperty('Function_Type') && (scriptArray[h]['Function_Type'] === 'Regular'))) {scriptString += 'function ';}
+              if (scriptArray[h].hasOwnProperty('Declared_Name')) {scriptString += scriptArray[h]['Declared_Name'] + ' ';}
+              scriptString += '(' + scriptArray[h]['Parameters'].join(', ') + ')';
+              if ((!scriptArray[h].hasOwnProperty('Function_Type') || (scriptArray[h]['Function_Type'] === 'Arrow'))) {scriptString += ' =>';}
             }
           
-            break;
+          break;
 
 
           case ('Loop') :
@@ -258,13 +258,15 @@ function renderScript(scriptJSON, moduleInfo = {name: 'moduleName', publisher: '
     scriptString = scriptString.replace(/\n+\/\/\//g, " ///");
     scriptString = scriptString.replace(/\n{2}([\s]*\/\/\s{1})/g, "\n\n\n\n$1");
     scriptString = scriptString.replace(/^\s+([^\w])/g, "$1");
-    
+    scriptString = scriptString.replace(/\(\nfunction/g, "(function");
+    scriptString = scriptString.replace(/\}\n\n\)/g, "})");
+
     if (codePanel !== true) {
     
-      scriptString = scriptString.replace(/new[\s|_]Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/g, "new_Worker($2{workerName: '$1', moduleName: '" + url(moduleInfo.name) + "', modulePublisher: '" + url(moduleInfo.publisher) + "'})");
+      scriptString = scriptString.replace(/new[\s|_]Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/g, "new_Worker($2{workerName: '$1', ashivaModule: '" + url(moduleInfo.name) + "', ashivaPublisher: '" + url(moduleInfo.publisher) + "'})");
       scriptString = scriptString.replace(/new_Worker\(\{([^\}]+)\}\{([^\}]+)\}\)/g, "new_Worker({\$2, \$1})");
     }
-    
+
     return scriptString;
   }
    
