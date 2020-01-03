@@ -890,70 +890,23 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
         case ('Function') :
 
-          $scriptString .= "\n".indent($indent);
-
           $Assigner = (array_key_exists('Assigner', $Script_Array[$h])) ? $Script_Array[$h]['Assigner'] : 'const';
+
+          $scriptString .= "\n".indent($indent);
 
           if ((array_key_exists('Function_Invoked', $Script_Array[$h]) && ($Script_Array[$h]['Function_Invoked'] === TRUE))) {
           
-            switch (TRUE) {
-          
-              case ((array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) && (array_key_exists('Declared_Name', $Script_Array[$h]))) :
-          
-                if ($Script_Array[$h]['Assigned_Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
-                $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
-                break;
-          
-              case ((array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular'))) :
-                
-                if ($Script_Array[$h]['Assigned_Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
-                $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
-                break;
-          
-              default :
-          
-                if ($Script_Array[$h]['Assigned_Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
-                $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
-                break;
-            }
+            if ($Script_Array[$h]['Assigned_Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
+            $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
           }
           
           else {
-          
-            switch (TRUE) {
 
-              case ((array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) && (array_key_exists('Declared_Name', $Script_Array[$h]))) :
-                
-                if ($Script_Array[$h]['Assigned_Name'] !== '') {
-
-                  $Termination_Map[$indent] = TRUE;
-                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';
-                }
-
-                $scriptString .= 'function '.$Script_Array[$h]['Declared_Name'].' ('.implode(', ', $Script_Array[$h]['Parameters']).')';
-                break;
-          
-              case (array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) :
-          
-                if ($Script_Array[$h]['Assigned_Name'] !== '') {
-
-                  $Termination_Map[$indent] = TRUE;
-                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';
-                }
-
-                $scriptString .= 'function ('.implode(', ', $Script_Array[$h]['Parameters']).')';
-                break;
-          
-              default :
-          
-                if ($Script_Array[$h]['Assigned_Name'] !== '') {
-
-                  $Termination_Map[$indent] = TRUE;
-                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';
-                }
-
-                $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') =>';
-            }
+            if ($Script_Array[$h]['Assigned_Name'] !== '') {$Termination_Map[$indent] = TRUE; $scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
+            if (array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) {$scriptString .= 'function ';}
+            if (array_key_exists('Declared_Name', $Script_Array[$h])) {$scriptString .= $Script_Array[$h]['Declared_Name'].' ';}
+            $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).')';
+            if (!array_key_exists('Function_Type', $Script_Array[$h]) || ($Script_Array[$h]['Function_Type'] === 'Arrow')) {$scriptString .= ' =>';}
           }
           
           break;
