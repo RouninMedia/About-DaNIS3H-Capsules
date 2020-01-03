@@ -51,7 +51,7 @@ $Test_Script_JSON = '
   {
     "Control" : "Function",
     "Function_Expression" : true,
-    "Name" : "responsiveDesign",
+    "Assigned_Name" : "responsiveDesign",
     "Parameters" : [],
     "Block" : [
 
@@ -168,7 +168,7 @@ $Test_Script_JSON = '
   {
     "Control" : "Function",
     "Function_Expression" : true,
-    "Name" : "customerActions",
+    "Assigned_Name" : "customerActions",
     "Parameters" : ["e"],
     "Block" : [
 
@@ -225,7 +225,7 @@ $Test_Script_JSON = '
                   {
                     "Control" : "Function",
                     "Function_Expression" : true,
-                    "Name" : "",
+                    "Assigned_Name" : "",
                     "Parameters" : [],
                     "Block" : [
 
@@ -250,7 +250,7 @@ $Test_Script_JSON = '
                   {
                     "Control" : "Function",
                     "Function_Expression" : true,
-                    "Name" : "",
+                    "Assigned_Name" : "",
                     "Parameters" : [],
                     "Block" : [
 
@@ -294,7 +294,7 @@ $Test_Script_JSON = '
                   {
                     "Control" : "Function",
                     "Function_Expression" : true,
-                    "Name" : "",
+                    "Assigned_Name" : "",
                     "Parameters" : [],
                     "Block" : [
 
@@ -319,7 +319,7 @@ $Test_Script_JSON = '
                   {
                     "Control" : "Function",
                     "Function_Expression" : true,
-                    "Name" : "",
+                    "Assigned_Name" : "",
                     "Parameters" : [],
                     "Block" : [
 
@@ -358,7 +358,7 @@ $Test_Script_JSON = '
                   {
                     "Control" : "Function",
                     "Function_Expression" : true,
-                    "Name" : "",
+                    "Assigned_Name" : "",
                     "Parameters" : [],
                     "Block" : [
 
@@ -383,7 +383,7 @@ $Test_Script_JSON = '
                   {
                     "Control" : "Function",
                     "Function_Expression" : true,
-                    "Name" : "",
+                    "Assigned_Name" : "",
                     "Parameters" : [],
                     "Block" : [
 
@@ -531,7 +531,7 @@ $Test_Script_JSON = '
       {
         "Control" : "Function",
         "Function_Expression" : true,
-        "Name" : "",
+        "Assigned_Name" : "",
         "Parameters" : [],
         "Block" : [
 
@@ -603,7 +603,7 @@ $Test_Script_JSON = '
   {
     "Control" : "Function",
     "Function_Type" : "Regular",
-    "Name" : "",
+    "Assigned_Name" : "",
     "Declared_Name" : "myFunction1",
     "Parameters" : [],
     "Block" : [
@@ -622,7 +622,7 @@ $Test_Script_JSON = '
     "Control" : "Function",
     "Function_Type" : "Regular",
     "Assigner" : "var",
-    "Name" : "myFunction2",
+    "Assigned_Name" : "myFunction2",
     "Declared_Name" : "myFunction22",
     "Parameters" : [],
     "Block" : [
@@ -640,7 +640,7 @@ $Test_Script_JSON = '
   {
     "Control" : "Function",
     "Function_Type" : "Regular",
-    "Name" : "",
+    "Assigned_Name" : "",
     "Parameters" : [],
     "Block" : [
 
@@ -658,7 +658,7 @@ $Test_Script_JSON = '
     "Control" : "Function",
     "Function_Type" : "Regular",
     "Assigner" : "var",
-    "Name" : "myFunction4",
+    "Assigned_Name" : "myFunction4",
     "Parameters" : [],
     "Block" : [
 
@@ -674,7 +674,7 @@ $Test_Script_JSON = '
 
   {
     "Control" : "Function",
-    "Name" : "",
+    "Assigned_Name" : "",
     "Parameters" : [],
     "Block" : [
 
@@ -690,7 +690,7 @@ $Test_Script_JSON = '
 
   {
     "Control" : "Function",
-    "Name" : "myFunction6",
+    "Assigned_Name" : "myFunction6",
     "Parameters" : [],
     "Block" : [
 
@@ -707,14 +707,14 @@ $Test_Script_JSON = '
   {
     "Control" : "Function",
     "Function_Invoked" : true,
-    "Name" : "",
+    "Assigned_Name" : "",
     "Parameters" : [],
     "Control_Function" : [
 
       {
         "Control" : "Function",
         "Function_Type" : "Regular",
-        "Name" : "",
+        "Assigned_Name" : "",
         "Declared_Name" : "myFunction7",
         "Parameters" : [],
         "Block" : [
@@ -735,14 +735,14 @@ $Test_Script_JSON = '
     "Control" : "Function",
     "Function_Invoked" : true,
     "Assigner" : "var",
-    "Name" : "myFunction8",
+    "Assigned_Name" : "myFunction8",
     "Parameters" : [],
     "Control_Function" : [
 
       {
         "Control" : "Function",
         "Function_Type" : "Regular",
-        "Name" : "",
+        "Assigned_Name" : "",
         "Declared_Name" : "myFunction8",
         "Parameters" : [],
         "Block" : [
@@ -762,14 +762,14 @@ $Test_Script_JSON = '
   {
     "Control" : "Function",
     "Function_Invoked" : true,
-    "Name" : "",
+    "Assigned_Name" : "",
     "Parameters" : [],
     "Control_Function" : [
 
       {
         "Control" : "Function",
         "Function_Type" : "Regular",
-        "Name" : "",
+        "Assigned_Name" : "",
         "Parameters" : [],
         "Block" : [
 
@@ -789,14 +789,14 @@ $Test_Script_JSON = '
     "Control" : "Function",
     "Function_Invoked" : true,
     "Assigner" : "var",
-    "Name" : "myFunction10",
+    "Assigned_Name" : "myFunction10",
     "Parameters" : [],
     "Control_Function" : [
 
       {
         "Control" : "Function",
         "Function_Type" : "Regular",
-        "Name" : "",
+        "Assigned_Name" : "",
         "Parameters" : [],
         "Block" : [
 
@@ -815,13 +815,13 @@ $Test_Script_JSON = '
   {
     "Control" : "Function",
     "Function_Invoked" : true,
-    "Name" : "",
+    "Assigned_Name" : "",
     "Parameters" : [],
     "Control_Function" : [
 
       {
         "Control" : "Function",
-        "Name" : "",
+        "Assigned_Name" : "",
         "Parameters" : [],
         "Block" : [
 
@@ -840,13 +840,13 @@ $Test_Script_JSON = '
   {
     "Control" : "Function",
     "Function_Invoked" : true,
-    "Name" : "myFunction12",
+    "Assigned_Name" : "myFunction12",
     "Parameters" : [],
     "Control_Function" : [
 
       {
         "Control" : "Function",
-        "Name" : "",
+        "Assigned_Name" : "",
         "Parameters" : [],
         "Block" : [
 
@@ -900,19 +900,19 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
           
               case ((array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) && (array_key_exists('Declared_Name', $Script_Array[$h]))) :
           
-                if ($Script_Array[$h]['Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';}
+                if ($Script_Array[$h]['Assigned_Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
                 $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
                 break;
           
               case ((array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular'))) :
                 
-                if ($Script_Array[$h]['Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';}
+                if ($Script_Array[$h]['Assigned_Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
                 $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
                 break;
           
               default :
           
-                if ($Script_Array[$h]['Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';}
+                if ($Script_Array[$h]['Assigned_Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
                 $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
                 break;
             }
@@ -924,10 +924,10 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
               case ((array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) && (array_key_exists('Declared_Name', $Script_Array[$h]))) :
                 
-                if ($Script_Array[$h]['Name'] !== '') {
+                if ($Script_Array[$h]['Assigned_Name'] !== '') {
 
                   $Termination_Map[$indent] = TRUE;
-                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';
+                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';
                 }
 
                 $scriptString .= 'function '.$Script_Array[$h]['Declared_Name'].' ('.implode(', ', $Script_Array[$h]['Parameters']).')';
@@ -935,10 +935,10 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
           
               case (array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) :
           
-                if ($Script_Array[$h]['Name'] !== '') {
+                if ($Script_Array[$h]['Assigned_Name'] !== '') {
 
                   $Termination_Map[$indent] = TRUE;
-                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';
+                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';
                 }
 
                 $scriptString .= 'function ('.implode(', ', $Script_Array[$h]['Parameters']).')';
@@ -946,10 +946,10 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
           
               default :
           
-                if ($Script_Array[$h]['Name'] !== '') {
+                if ($Script_Array[$h]['Assigned_Name'] !== '') {
 
                   $Termination_Map[$indent] = TRUE;
-                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Name'].' = ';
+                  $scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';
                 }
 
                 $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).') =>';
