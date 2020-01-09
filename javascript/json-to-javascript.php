@@ -1120,9 +1120,23 @@ function createScript($Script_JSON, $Module_Info, $Code_Panel = FALSE) {
   $scriptString = preg_replace("/\}\n\n\)/", "})", $scriptString);
 
   if ($Code_Panel !== TRUE) {
-  
-    $scriptString = preg_replace("/new[\s|_]Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/", "new_Worker($2{workerName: '$1', ashivaModule: '".url($Module_Info['Name'])."', ashivaPublisher: '".url($Module_Info['Publisher'])."'})", $scriptString);
+
+    preg_match_all("/Worker\(\'([^\']+)\'/", $scriptString, $newWorkers); $newWorkers = array_unique($newWorkers[1]); sort($newWorkers);
+
+    $scriptString = preg_replace("/(var|let|const)\s+([^\s]+)\s\=\s+new[\s|_]Worker\(\'([^\']+)\'\,?\s?([^\)]*)\)/", "let $2 = new_Worker($4{workerName: '$3', ashivaModule: '".url($Module_Info['Name'])."', ashivaPublisher: '".url($Module_Info['Publisher'])."', workerFunction: $3})", $scriptString);
     $scriptString = preg_replace("/new_Worker\(\{([^\}]+)\}\{([^\}]+)\}\)/", "new_Worker({\$2, \$1})", $scriptString);
+
+    foreach ($newWorkers as $workerName) {
+      
+      $workerAddress = url($Module_Info['Name'])."»by»".url($Module_Info['Publisher'])."»»»".$workerName;
+      $workerFunctionName = preg_replace("/([A-Za-z0-9]+)(--)?[^\.]*\.js/", "$1WorkerFunction", $workerName);
+
+      $scriptString = preg_replace("/".$workerName."/", $workerFunctionName."ToUse", $scriptString);
+      $scriptString = preg_replace("/workerName: '".$workerFunctionName."ToUse'/", "workerName: '".$workerName."'", $scriptString);
+      $scriptString = preg_replace("/(let\s[^\s]+\s\=\snew_Worker\(\{workerName:\s'".$workerName."')/", "\nif (!ashivaModuleWorkers.hasOwnProperty('".$workerAddress."')) {ashivaModuleWorkers['".$workerAddress."'] = {ashivaModule: 'sb-customer', ashivaPublisher: 'scotia-beauty'};}\nconst ".$workerFunctionName."ToUse = (typeof ".$workerFunctionName." === 'undefined') ? () => console.log('⚠️ Ashiva Console: workerFunction missing for \"".$workerAddress."\". Attach workerFunction to new Worker(\'".$workerName."\') or define ".$workerFunctionName."().') : ".$workerFunctionName.";\n$1", $scriptString, 1);
+    }
+
+    $scriptString = preg_replace("/(\s*workerFunction\:\s*[^\,\}]+\,)(.+?)(workerFunction\:)/", "$2$3", $scriptString);
   }
 
   return $scriptString;
