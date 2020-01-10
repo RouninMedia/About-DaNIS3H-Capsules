@@ -8,7 +8,7 @@ $Styles_String = <<< ENDOFSTYLES
 .pageBack,
 .pageForward {
 
-  position: absolute;
+  position: fixed;
   top: calc(50% - 20px);
   z-index: 12;
   width: 40px;
@@ -16,7 +16,7 @@ $Styles_String = <<< ENDOFSTYLES
   line-height: 40px;
   font-size: 36px;
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(178, 0, 87, 0.3);
   cursor: pointer;
   animation: revealPageButtons 0.6s linear;
 }
@@ -40,8 +40,7 @@ $Styles_String = <<< ENDOFSTYLES
 
 .pageBack::after {
 
-  transform: rotateY(180deg);
-  color: rgba(255, 255, 255, 0.5);
+  transform: rotateX(180deg);
 }
 
 .pageBack:hover::after,
@@ -124,7 +123,7 @@ function CSS_to_JSON ($Styles_String) {
     for ($j = 0; $j < count($Styles_Array[$i]); $j++) {
 
       $Styles_Array[$i][$j] = preg_replace("/(\,)/", '$1 ', $Styles_Array[$i][$j]);
-      $Styles_Array[$i][$j] = preg_replace("/[^A-Za-z](\+|\-|\*|\/)[^A-Za-z]/", " $1 ", $Styles_Array[$i][$j]);
+      $Styles_Array[$i][$j] = preg_replace("/([\)0-9%])(\+|\-|\*|\/)([0-9%])/", "$1 $2 $3", $Styles_Array[$i][$j]);
       $Styles_Array[$i][$j] = preg_replace("/(\d+\.?\d+s)/", ' $1 ', $Styles_Array[$i][$j]);
     }
   }
@@ -173,7 +172,7 @@ function CSS_to_JSON ($Styles_String) {
 
     for ($j = 0; $j < count(${'@Rules'}[$Rule_Types[$i]]); $j++) {
 
-      $RuleToAdd['@Rule']['Type'] = strtolower($Rule_Types[$i]);
+      $RuleToAdd['@Rule']['Type'] = strtolower(str_replace('@', '', $Rule_Types[$i]));
       $RuleToAdd['@Rule']['Animation Name'] = explode('{', ${'@Rules'}[$Rule_Types[$i]][$j])[0];
       $Animation_Sequence_Blocks = [];
 
