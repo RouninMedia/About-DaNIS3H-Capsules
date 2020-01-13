@@ -1,0 +1,338 @@
+{
+  "ashivaModuleManifest" : {
+    
+    "ashivaPublisher" : "Scotia_Beauty",
+    "ashivaPublisherCode" : "SB",
+
+    "ashivaModuleName" : "nextPage",
+    "ashivaModuleCode" : "___HASH_CHECKSUM_HERE___",
+
+
+    "ashivaModuleBlock" : {
+
+      "ashivaPrimeComponent" : "Markup",
+  
+
+      "ashivaModuleSheetList" : [
+
+        {
+          "modulesheetName" : "nextPage__Markup",
+          "modulesheetFilename" : "nextPage__Markup",
+          "modulesheetType" : "Static",
+          "modulesheetNotes" : {}
+        },
+
+        {
+          "modulesheetName" : "nextPage__Styles",
+          "modulesheetFilename" : "nextPage__Styles",
+          "modulesheetType" : "Static",
+          "modulesheetNotes" : {}
+        },
+
+        {
+          "modulesheetName" : "nextPage__Scripts",
+          "modulesheetFilename" : "nextPage__Scripts",
+          "modulesheetType" : "Static",
+          "modulesheetNotes" : {}
+        }
+      ]
+    },
+
+
+    "ashivaModuleBuild" : {
+
+      "Markup" : "nextPage__Markup",
+      "Styles" : "nextPage__Styles",
+      "Scripts" : "nextPage__Scripts"
+    }
+  },
+
+
+  "ashivaModuleSheets" : {
+
+    "Static" : {
+
+      "nextPage__Markup" : [
+
+        {
+          "element" : "div",
+          "classList" : ["pageBack"],
+          "elementChildren" : []
+        },
+
+        {
+          "element" : "div",
+          "classList" : ["pageForward"],
+          "elementChildren" : []
+        }
+
+      ],
+
+      "nextPage__Styles" : [
+        
+        {
+          "Selectors" : [
+            
+            ".pageBack",
+            ".pageForward"
+          ],
+        
+          "Styles" : {
+            
+            "position" : "fixed",
+            "top" : "calc(50% - 20px)",
+            "z-index" : "12",
+            "width" : "34px",
+            "height" : "58px",
+            "font-size" : "36px",
+            "text-align" : "center",
+            "background" : "rgb(178, 0, 87) url('/.assets/design/elements/graphics/scotia-beauty-logo.png') top center/contain no-repeat",
+            "border-radius" : "4px 0 0 4px",
+            "box-shadow" : "0 0 6px rgb(0, 0, 0)",
+            "opacity" : "0.3",
+            "cursor" : "pointer",
+            "transition" : "opacity 0.6s linear",
+            "animation" : "revealPageButtons 0.2s linear"
+          }
+        },
+
+        {
+          "Selectors" : [
+          
+            ".pageBack"
+          ],
+        
+          "Styles" : {
+          
+            "left" : "0",
+            "transform" : "scaleX(-1)"
+          }
+        },
+          
+        {
+          "Selectors" : [
+          
+            ".pageForward"
+          ],
+        
+          "Styles" : {
+          
+            "right" : "0"
+          }
+        },
+          
+        {
+          "Selectors" : [
+          
+            ".pageBack:hover",
+            ".pageForward:hover"
+          ],
+        
+          "Styles" : {
+          
+            "opacity" : "1"
+          }
+        },
+          
+        {
+          "Selectors" : [
+          
+            ".pageBack::after",
+            ".pageForward::after"
+          ],
+        
+          "Styles" : {
+          
+            "display" : "block",
+            "font-size" : "10px",
+            "font-family" : "scotia-beauty, arial, helvetic, sans-serif",
+            "line-height" : "98px",
+            "text-transform" : "uppercase"
+          }
+        },
+          
+        {
+          "Selectors" : [
+          
+            ".pageBack::after"
+          ],
+        
+          "Styles" : {
+
+            "content" : "'Back'",
+            "transform" : "scaleX(-1)"
+          }
+        },
+          
+        {
+          "Selectors" : [
+          
+            ".pageForward::after"
+          ],
+
+          "Styles" : {
+          
+            "content" : "'Next'"
+          }
+        }
+      ],
+
+      "nextPage__Scripts" : [
+        {
+          "Control" : "Statements",
+          "Statements" : [
+      
+            "const nextPageModule = document.querySelector('[data-ashiva-module=\"sb-nextpage\"][data-ashiva-publisher=\"scotiaBeauty\"]')",
+            "const pageBack = document.getElementsByClassName('sb-nextpage»by»scotiaBeauty»»»pageBack')[0]",
+            "const pageForward = document.getElementsByClassName('sb-nextpage»by»scotiaBeauty»»»pageForward')[0]",
+            "const currentAddress = window.location.href",
+            "const currentPage = txt(currentAddress.split('/').reverse()[1])",
+            "const currentSection = txt(currentAddress.split('/').reverse()[2])",
+            "let previousPageAddress",
+            "let nextPageAddress",
+            "const nailProductsCategories = [... document.getElementsByClassName('sb-translations°en»by»scotiaBeauty»»»nail-products-category')]"
+          ]
+        },
+      
+        {
+          "Control" : "Loop",
+          "Type" : "For",
+          "Header" : "let i = 0; i < nailProductsCategories.length; i++",
+          "Block" : [
+      
+            {
+              "Control" : "If",
+              "Conditions" : [
+                
+                "nailProductsCategories[i].textContent.toLowerCase() === currentSection.toLowerCase()"
+              ],
+      
+              "Block" : [
+      
+                {
+                  "Control" : "Statements",
+                  "Statements" : [
+      
+                    "let nailProductsCategoryOptions = [... nailProductsCategories[i].parentNode.getElementsByTagName('li')]"
+                  ]
+                },
+      
+                {
+                  "Control" : "Loop",
+                  "Type" : "For",
+                  "Header" : "let j = 0; j < nailProductsCategoryOptions.length; j++",
+                  "Block" : [
+      
+                    {
+                      "Control" : "If",
+                      "Conditions" : [
+                
+                        "nailProductsCategoryOptions[j].getElementsByTagName('a').length < 1"
+                      ],
+      
+                      "Block" : [
+      
+                        {
+                          "Control" : "If",
+                          "Conditions" : [
+                
+                            "j === 0"
+                          ],
+      
+                          "Block" : [
+      
+                            {
+                              "Control" : "Statements",
+                              "Statements" : [
+      
+                                "previousPageAddress = nailProductsCategoryOptions[(nailProductsCategoryOptions.length - 1)].getElementsByTagName('a')[0].href"
+                              ]
+                            }
+                          ]
+                        },
+      
+                        {
+                          "Control" : "Else",
+      
+                          "Block" : [
+      
+                            {
+                              "Control" : "Statements",
+                              "Statements" : [
+      
+                                "previousPageAddress = nailProductsCategoryOptions[(j - 1)].getElementsByTagName('a')[0].href"
+                              ]
+                            }
+                          ]
+                        },
+      
+      
+      
+                        {
+                          "Control" : "If",
+                          "Conditions" : [
+                
+                            "j === (nailProductsCategoryOptions.length - 1)"
+                          ],
+      
+                          "Block" : [
+      
+                            {
+                              "Control" : "Statements",
+                              "Statements" : [
+      
+                                "nextPageAddress = nailProductsCategoryOptions[0].getElementsByTagName('a')[0].href"
+                              ]
+                            }
+                          ]
+                        },
+      
+                        {
+                          "Control" : "Else",
+      
+                          "Block" : [
+      
+                            {
+                              "Control" : "Statements",
+                              "Statements" : [
+      
+                                "nextPageAddress = nailProductsCategoryOptions[(j + 1)].getElementsByTagName('a')[0].href"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+      
+        {
+          "Control" : "Statements",
+          "Statements" : [
+      
+            "previousPageAddress = previousPageAddress.replace('https://scotiabeauty.com', '')",
+            "nextPageAddress = nextPageAddress.replace('https://scotiabeauty.com', '')",
+            "let previousPage = txt(previousPageAddress.replace(/\\/nail-products\\/[^\\/]+\\/([^\\/]+)\\//, '$1'))",
+            "let nextPage = txt(nextPageAddress.replace(/\\/nail-products\\/[^\\/]+\\/([^\\/]+)\\//, '$1'))",
+      
+            "let pageBackLink = document.createElement('a')",
+            "pageBackLink.href = previousPageAddress",
+            "pageBackLink.title = '[PREVIOUS PAGE] See the Scotia Beauty ' + currentSection + ' \\n white label product: ' + previousPage",
+            "nextPageModule.appendChild(pageBackLink)",
+            "pageBackLink.appendChild(pageBack)",
+      
+            "let pageForwardLink = document.createElement('a')",
+            "pageForwardLink.href = nextPageAddress",
+            "pageForwardLink.title = '[NEXT PAGE] See the Scotia Beauty ' + currentSection + ' \\n white label product: ' + nextPage",
+            "nextPageModule.appendChild(pageForwardLink)",
+            "pageForwardLink.appendChild(pageForward)"
+          ]
+        }
+      ]
+    }
+  }
+}
