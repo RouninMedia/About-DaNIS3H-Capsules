@@ -12,7 +12,6 @@
 
       "ashivaPrimeComponent" : "Markup",
   
-
       "ashivaModuleSheetList" : [
 
         {
@@ -48,7 +47,7 @@
   },
 
 
-  "ashivaModuleSheets" : {
+  "ashivaCodeSheets" : {
 
     "Static" : {
 
