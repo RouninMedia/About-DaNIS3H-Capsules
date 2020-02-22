@@ -884,29 +884,42 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
   for ($h = 0; $h < count($Script_Array); $h++) {
 
-    if (array_key_exists('Control', $Script_Array[$h])) {
+    if ((isset($Script_Array[$h]['Skip_Control'])) && ($Script_Array[$h]['Skip_Control'] === TRUE)) continue;
+
+    if (isset($Script_Array[$h]['Control'])) {
 
       switch ($Script_Array[$h]['Control']) {
 
         case ('Function') :
 
-          $Assigner = (array_key_exists('Assigner', $Script_Array[$h])) ? $Script_Array[$h]['Assigner'] : 'const';
+          $Assigner = (isset($Script_Array[$h]['Assigner'])) ? $Script_Array[$h]['Assigner'] : 'const';
 
           $scriptString .= "\n".indent($indent);
 
-          if ((array_key_exists('Function_Invoked', $Script_Array[$h]) && ($Script_Array[$h]['Function_Invoked'] === TRUE))) {
+          if ((isset($Script_Array[$h]['Function_Invoked']) && ($Script_Array[$h]['Function_Invoked'] === TRUE))) {
           
-            if ($Script_Array[$h]['Assigned_Name'] !== '') {$scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
+            if (isset($Script_Array[$h]['Assigned_Name'])) {$scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
             $scriptString .= '('.buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent).')();'."\n";
           }
           
           else {
 
-            if ($Script_Array[$h]['Assigned_Name'] !== '') {$Termination_Map[$indent] = TRUE; $scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
-            if (array_key_exists('Function_Type', $Script_Array[$h]) && ($Script_Array[$h]['Function_Type'] === 'Regular')) {$scriptString .= 'function ';}
-            if (array_key_exists('Declared_Name', $Script_Array[$h])) {$scriptString .= $Script_Array[$h]['Declared_Name'].' ';}
+            // I THINK YOU CAN MAKE THIS SIMPLER :: 'Declared Name' *ALWAYS* MEANS 'Function_Type' IS 'Regular'...
+            // No... because regular functions don't need declared names...
+            // So a function can be:
+
+            // 1) Arrow / No Declared Name
+            // 2) Regular / No Declared Name
+            // 3) Regular / Declared Name
+
+            // So this just means that any instance of 4) Arrow / Declared Name is *ACTUALLY* 3) Regular / Declared Name
+            // ... THINK ABOUT IT.
+
+            if (isset($Script_Array[$h]['Assigned_Name'])) {$Termination_Map[$indent] = TRUE; $scriptString .= $Assigner.' '.$Script_Array[$h]['Assigned_Name'].' = ';}
+            if (isset($Script_Array[$h]['Function_Type']) && ($Script_Array[$h]['Function_Type'] === 'Regular')) {$scriptString .= 'function ';}
+            if (isset($Script_Array[$h]['Declared_Name'])) {$scriptString .= $Script_Array[$h]['Declared_Name'].' ';}
             $scriptString .= '('.implode(', ', $Script_Array[$h]['Parameters']).')';
-            if (!array_key_exists('Function_Type', $Script_Array[$h]) || ($Script_Array[$h]['Function_Type'] === 'Arrow')) {$scriptString .= ' =>';}
+            if (!isset($Script_Array[$h]['Function_Type']) || ($Script_Array[$h]['Function_Type'] === 'Arrow')) {$scriptString .= ' =>';}
           }
           
           break;
@@ -983,12 +996,23 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
           $scriptString .= indent($indent).$Script_Array[$h]['Event_Target'];
           $scriptString .= (($Script_Array[$h]['Event_Target'] === 'window') && ($Script_Array[$h]['Event_Type'] === 'load')) ? '_' : '.';
-          $scriptString .= 'addEventListener(\''.$Script_Array[$h]['Event_Type'].'\', ';
-          if ($Script_Array[$h]['Event_Callback_Name'] !== '') {$scriptString .= $Script_Array[$h]['Event_Callback_Name'];}
-          else {$scriptString .= buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent);}
-          $scriptString .= ', ';
-          $scriptString .= ($Script_Array[$h]['Event_useCapture'] === FALSE) ? 'false' : 'true';
-          $scriptString .= ');'."\n";
+
+          if ((isset($Script_Array[$h]['Uses_OnEvent_Handler'])) && ($Script_Array[$h]['Uses_OnEvent_Handler'] === TRUE)) {
+
+          	$scriptString .= 'on'.$Script_Array[$h]['Event_Type'].' = ';
+          	$scriptString .= buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent);
+          	$scriptString .= ';'."\n";
+          }
+
+          else {
+            
+            $scriptString .= 'addEventListener(\''.$Script_Array[$h]['Event_Type'].'\', ';
+            if ((isset($Script_Array[$h]['Event_Callback_Name'])) && ($Script_Array[$h]['Event_Callback_Name'] !== '')) {$scriptString .= $Script_Array[$h]['Event_Callback_Name'];}
+            else {$scriptString .= buildScript($Script_Array[$h]['Control_Function'], $Module_Info, $indent);}
+            if ((isset($Script_Array[$h]['Event_useCapture'])) && ($Script_Array[$h]['Event_useCapture'] === TRUE)) {$scriptString .= ', true';}
+            else {$scriptString .= ', false';}
+            $scriptString .= ');'."\n";
+          }
 
           break;
 
@@ -1010,7 +1034,7 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
           $scriptString .= "\n".indent($indent).'switch ('.$Script_Array[$h]['Control_Expression'].')';
 
-          if (array_key_exists('Cases', $Script_Array[$h])) {
+          if (isset($Script_Array[$h]['Cases'])) {
 
             $scriptString .= ' {'."\n\n";
             $indent++;
@@ -1042,11 +1066,16 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
               $indent--;
             }
 
-            if ((array_key_exists('Default', $Script_Array[$h])) && ($Script_Array[$h]['Default'] !== '')) {
+            if (isset($Script_Array[$h]['Default'])) {
 
               $scriptString .= "\n\n".indent($indent).'default :'."\n\n";
               $indent++;
-              $scriptString .= indent($indent).$Script_Array[$h]['Default'].';';
+
+              for ($i = 0; $i < count($Script_Array[$h]['Default']); $i++) {
+
+                $scriptString .= indent($indent).$Script_Array[$h]['Default'][$i].';'."\n";
+              }
+
               $indent--;
             }
 
@@ -1079,7 +1108,7 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
       $scriptString .= "\n".indent($indent).'// Ashiva Console: Javascript Control Missing in '.txt($Module_Info['Name']).' Module by '.txt($Module_Info['Publisher'])."\n";
     }
 
-    if (array_key_exists('Block', $Script_Array[$h])) {
+    if (isset($Script_Array[$h]['Block'])) {
 
       $scriptString .= ' {'."\n\n";
       $indent++;
@@ -1099,7 +1128,6 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
   return $scriptString;
 }
-
 
 // FUNCTION :: CREATE SCRIPT
 function createScript($Script_JSON, $Module_Info, $Code_Panel = FALSE) {
