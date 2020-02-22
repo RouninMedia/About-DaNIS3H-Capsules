@@ -884,7 +884,11 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
   for ($h = 0; $h < count($Script_Array); $h++) {
 
-    if ((isset($Script_Array[$h]['Skip_Control'])) && ($Script_Array[$h]['Skip_Control'] === TRUE)) continue;
+    if (isset($Script_Array[$h]['Skip_Control'])) {
+
+      if ($Script_Array[$h]['Skip_Control'] === 'Skip') continue;
+      if ($Script_Array[$h]['Skip_Control'] === 'Comment') {$scriptString .= "/*\n\n";}
+    }
 
     if (isset($Script_Array[$h]['Control'])) {
 
@@ -1124,6 +1128,8 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
       $scriptString .= "\n\n";
     }
+    
+    if ((isset($Script_Array[$h]['Skip_Control'])) && ($Script_Array[$h]['Skip_Control'] === 'Comment')) {$scriptString .= "\n*/";}
   }
 
   return $scriptString;
