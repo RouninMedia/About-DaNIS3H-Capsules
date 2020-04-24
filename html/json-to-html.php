@@ -1,16 +1,16 @@
 <?php
 
-function renderMarkup($Element, $Module_Set, $Module_Publisher) {
+function renderMarkup($Elements, $Module_Set, $Module_Publisher) {
 
   $NameSpace = url($Module_Set).'»by»'.txt($Module_Publisher, 'camelCase').'»»»';
 
   $Markup = '';
 
-  for ($i = 0; $i < count($Element); $i++) {
+  for ($i = 0; $i < count($Elements); $i++) {
 
-    if ((isset($Element[$i]['element'])) && ($Element[$i]['element'] === 'attributes')) {
+    if ((isset($Elements[$i]['element'])) && ($Elements[$i]['element'] === 'attributes')) {
 
-      foreach ($Element[$i]['attributes'] as $Attribute => $Value) {
+      foreach ($Elements[$i]['attributes'] as $Attribute => $Value) {
 
         if ($Value === $Attribute) {
 
@@ -26,31 +26,31 @@ function renderMarkup($Element, $Module_Set, $Module_Publisher) {
 
     else {
 
-      if (isset($Element[$i]['plainText'])) {
+      if (isset($Elements[$i]['plainText'])) {
 
-        $Markup .= htmlspecialchars($Element[$i]['plainText']);
+        $Markup .= htmlspecialchars($Elements[$i]['plainText']);
       }
   
-      elseif (isset($Element[$i]['element'])) {
+      elseif (isset($Elements[$i]['element'])) {
 
-        $Markup .= '<'.$Element[$i]['element'];
+        $Markup .= '<'.$Elements[$i]['element'];
 
-        if (isset($Element[$i]['id'])) {
+        if (isset($Elements[$i]['id'])) {
       
-          $id = $NameSpace.$Element[$i]['id'];
+          $id = $NameSpace.$Elements[$i]['id'];
           $Markup .= ' id="'.$id.'"';
         }
 
-        if (isset($Element[$i]['classList'])) {
+        if (isset($Elements[$i]['classList'])) {
       
-          $ClassList = $NameSpace.implode(' ', $Element[$i]['classList']);
+          $ClassList = $NameSpace.implode(' ', $Elements[$i]['classList']);
           $ClassList = str_replace(' ', ' '.$NameSpace, $ClassList);
           $Markup .= ' class="'.$ClassList.'"';
         }
 
-        if (isset($Element[$i]['attributes'])) {
+        if (isset($Elements[$i]['attributes'])) {
         
-          foreach ($Element[$i]['attributes'] as $Attribute => $Value) {
+          foreach ($Elements[$i]['attributes'] as $Attribute => $Value) {
 
             if ($Attribute === 'for') {$Value = $NameSpace.$Value;}
             
@@ -66,16 +66,17 @@ function renderMarkup($Element, $Module_Set, $Module_Publisher) {
           }
         }
 
-        if (isset($Element[$i]['self-closing'])) {
+        if (isset($Elements[$i]['self-closing'])) {
 
           $Markup .= ' />'; continue;
         }
         
         else {
           
-          $Markup .= '>';        
-          $Markup .= renderMarkup($Element[$i]['elementChildren'], $Module_Set, $Module_Publisher);
-          $Markup .= '</'.$Element[$i]['element'].'>';
+          $Markup .= '>';
+          $Element_Children = $Elements[$i]['elementChildren'] ?? [];   
+          $Markup .= renderMarkup($Element_Children, $Module_Set, $Module_Publisher);
+          $Markup .= '</'.$Elements[$i]['element'].'>';
         }
       }
 
