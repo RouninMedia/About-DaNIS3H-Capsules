@@ -91,15 +91,23 @@ function renderMarkup($Elements, $Module_Set, $Module_Publisher) {
 }
 
 
-
-function getMarkup($Module, $Context = 'page', $Chapter = NULL) {
+function getMarkup($Module, $Context = 'page') {
   
-  $Module_Markup = array();
+  $Module_Markup = [];
+
   $Module_Set = url(str_replace('::', '°', $Module['Name']));
 
   if ($Context === 'element') {
 
-    $Module_Markup = json_decode($Module['Content'], TRUE);
+    if (in_array($Module['Name'], ['SB_Body_Data'])) {
+
+      $Module_Markup = $Module['Source'];
+    }
+
+    else {
+
+      $Module_Markup = json_decode($Module['Source'], TRUE);
+    }
   }
 
   elseif ($Context === 'page') {
@@ -107,31 +115,11 @@ function getMarkup($Module, $Context = 'page', $Chapter = NULL) {
     $Module_Markup[0]['element'] = 'div';
     $Module_Markup[0]['attributes']['data-ashiva-module'] = $Module_Set;
     $Module_Markup[0]['attributes']['data-ashiva-publisher'] = txt($Module['Publisher'], 'camelCase');
-
-    $Markup = $Module['Content'];
-
-    // NOT SURE WHAT IS GOING ON IMMEDIATELY BELOW?
-
-    /*
-    if (!is_null($Chapter)) {
-
-      $i = 0;
-
-      while ($i < count($Chapter)) {
-
-        $Markup = $Markup[$Chapter[$i]];
-        $i++;
-      }
-    }
-    */
-    
-    // TEMPORARY REPLACEMENT FOR THE WHILE LOOP ABOVE
-    if (!is_null($Chapter)) {$Markup = $Markup[$Chapter[0]];}
-
-    $Module_Markup[0]['elementChildren'] = json_decode($Markup, TRUE);
+    $Module_Markup[0]['elementChildren'] = $Module['Source'];
   }
 
   $renderedMarkup = renderMarkup($Module_Markup, $Module_Set, $Module['Publisher']);
+  // $renderedMarkup = preg_replace('/\>(?=\<(?:aside|div|\/div|form|\/form|h2|label|li|p|ul|\/ul))/', '>\n', $renderedMarkup);
   $renderedMarkup = preg_replace('/\>\<(aside|div|\/div|form|\/form|h2|label|li|p|ul|\/ul)/', '>\n<$1', $renderedMarkup);
   $renderedMarkup = preg_replace('/\<\/(div|h2|h3|li|p|ul)\>/', '</$1>\n', $renderedMarkup);
   $renderedMarkup = str_replace('\n\n', '\n', $renderedMarkup);
