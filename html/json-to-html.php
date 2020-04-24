@@ -2,7 +2,7 @@
 
 function renderMarkup($Element, $Module_Set, $Module_Publisher) {
 
-  $NameSpace = url($Module_Set).'»by»'.cml($Module_Publisher).'»»»';
+  $NameSpace = url($Module_Set).'»by»'.txt($Module_Publisher, 'camelCase').'»»»';
 
   $Markup = '';
 
@@ -105,7 +105,7 @@ function getMarkup($Module, $Context = 'page', $Chapter = NULL) {
 
     $Module_Markup[0]['element'] = 'div';
     $Module_Markup[0]['attributes']['data-ashiva-module'] = $Module_Set;
-    $Module_Markup[0]['attributes']['data-ashiva-publisher'] = cml($Module['Publisher']);
+    $Module_Markup[0]['attributes']['data-ashiva-publisher'] = txt($Module['Publisher'], 'camelCase');
 
     $Markup = $Module['Content'];
 
