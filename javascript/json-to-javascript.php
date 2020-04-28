@@ -1,7 +1,23 @@
 <?php
 
+  //******************//
+ //* DISPLAY ERRORS *//
+//******************//
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+
+  //****************//
+ //* INCLUDE CORE *//
+//****************//
+
+require_once $_SERVER['DOCUMENT_ROOT'].'/.assets/system/core/core.php';
+
+
+  //*************//
+ //* FUNCTIONS *//
+//*************//
 
 // FUNCTION :: INDENT
 function indent($indent) {
@@ -29,6 +45,7 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
       if ($Script_Array[$h]['Skip_Control'] === 'Comment') {$scriptString .= "/*\n\n";}
     }
 
+
     if (isset($Script_Array[$h]['Control'])) {
 
       switch ($Script_Array[$h]['Control']) {
@@ -46,6 +63,9 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
           }
           
           else {
+
+            // Crockford uses the terms "Function Expression" and "Function Statement"
+            // If the first token in a statement is "function" then it's a "function statement". Otherwise it's a "function expression".
 
             // I THINK YOU CAN MAKE THIS SIMPLER :: 'Declared Name' *ALWAYS* MEANS 'Function_Type' IS 'Regular'...
             // No... because regular functions don't need declared names...
@@ -274,19 +294,19 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
   return $scriptString;
 }
 
-// FUNCTION :: CREATE SCRIPT
-function createScript($Script_JSON, $Module_Info, $Code_Panel = FALSE) {
 
-  $Script_Array = json_decode($Script_JSON, TRUE);
+// FUNCTION :: CREATE SCRIPT
+function createScript($Script_Array, $Module_Info, $Code_Panel = FALSE) {
+
   $scriptString = buildScript($Script_Array, $Module_Info);
 
   $scriptString = preg_replace("/\;\s*\,/", ",", $scriptString);
   $scriptString = preg_replace("/\s*\n\s*\n(\s*\})/", "\n$1", $scriptString);
   $scriptString = preg_replace("/\n{3,}/", "\n\n", $scriptString);
   $scriptString = preg_replace("/\(\s*\n\s*\(/", "((", $scriptString);
-  $scriptString = preg_replace("/\,\s*\n\s*\(/", ", (", $scriptString);
-  $scriptString = preg_replace("/\}\s*\n{2}\,/", "},", $scriptString);
-  $scriptString = preg_replace("/\n+\/\/\//", " ///", $scriptString);
+  $scriptString = preg_replace("/(\,|\=)\s*\n\s*\(/", "$1 (", $scriptString);
+  $scriptString = preg_replace("/\}\s*\n{2}(\,|\;)/", "}$1", $scriptString);
+  $scriptString = preg_replace("/\n+[\/]{3}/", " ///", $scriptString);
   $scriptString = preg_replace("/\n{2}([\s]*\/\/\s{1})/", "\n\n\n\n$1", $scriptString);
   $scriptString = preg_replace("/^\s+([^\w])/", "$1", $scriptString);
   $scriptString = preg_replace("/\(\nfunction/", "(function", $scriptString);
@@ -324,16 +344,10 @@ function getScripts($Modules) {
 
   foreach ($Modules['Scripts'] as $Module_Name => $Module_Scriptsheet) {
 
-    $Module_Publisher = $Modules['Register'][$Module_Name]['Publisher'];
-    $Module_Set = str_replace('::', '°', $Module_Name);
-    
-    if (in_array($Module_Name, ['SB_Consoles', 'SB_Customer', 'SB_Translations::EN'])) {
+    $Module_Info['Name'] = $Module_Name;
+    $Module_Info['Publisher'] = $Module_Publisher = $Modules['Register'][$Module_Name]['Publisher'];
 
-      $Module_Info['Name'] = $Module_Name;
-      $Module_Info['Publisher'] = $Module_Publisher;
-
-      $Module_Scriptsheet = createScript($Module_Scriptsheet, $Module_Info);
-    }
+    $Module_Scriptsheet = createScript($Module_Scriptsheet, $Module_Info);
 
     $Script .= '  //*'.str_repeat('*', (strlen($Module_Name) + strlen($Module_Publisher) + 13)).'*//'."\n";
     $Script .= ' //* '.strtoupper(txt($Module_Name)).' MODULE by '.strtoupper(txt($Module_Publisher)).' *//'."\n";
