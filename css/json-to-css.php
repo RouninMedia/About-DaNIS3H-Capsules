@@ -8,11 +8,11 @@ function getStyles($Modules) {
 
     $Module_Publisher = $Modules['Register'][$Module_Name]['Publisher'];
     $Module_Set = str_replace('::', '°', $Module_Name);
-    $Module_Stylesheet = json_decode($Module_Stylesheet, TRUE);
 
-    $Stylesheet .= '  //*'.str_repeat('*', (strlen($Module_Name) + strlen($Module_Publisher) + 13)).'*//'."\n";
-    $Stylesheet .= ' //* '.strtoupper(txt($Module_Name)).' MODULE by '.strtoupper(txt($Module_Publisher)).' *//'."\n";
-    $Stylesheet .= '//*'.str_repeat('*', (strlen($Module_Name) + strlen($Module_Publisher) + 13)).'*//'."\n\n";
+    $Stylesheet .= '  /*'.str_repeat('*', (strlen($Module_Name) + strlen($Module_Publisher) + 13)).'*/'."\n";
+    $Stylesheet .= ' /* '.strtoupper(txt($Module_Name)).' MODULE by '.strtoupper(txt($Module_Publisher)).' */'."\n";
+    $Stylesheet .= '/*'.str_repeat('*', (strlen($Module_Name) + strlen($Module_Publisher) + 13)).'*/'."\n\n";
+
 
     for ($i = 0; $i < count($Module_Stylesheet); $i++) {
 
@@ -70,7 +70,7 @@ function getStyles($Modules) {
     
               if ($k > 0) {$Stylesheet .= ','."\n";}
 
-              $Namespace = url($Module_Set).'»by»'.cml($Module_Publisher).'»»»';
+              $Namespace = url($Module_Set).'»by»'.txt($Module_Publisher, 'camelCase').'»»»';
               $Selector = $Selectors[$k];
               $Selector = str_replace('.', '.'.$Namespace, $Selector);
               $Selector = str_replace('#', '#'.$Namespace, $Selector);
@@ -101,7 +101,7 @@ function getStyles($Modules) {
     
           if ($j > 0) {$Stylesheet .= ','."\n";}
 
-          $Namespace = url($Module_Set).'»by»'.cml($Module_Publisher).'»»»';
+          $Namespace = url($Module_Set).'»by»'.txt($Module_Publisher, 'camelCase').'»»»';
 
           $Selector = $Selectors[$j];
           $Selector = str_replace('.', '.'.$Namespace, $Selector);
