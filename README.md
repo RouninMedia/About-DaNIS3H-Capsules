@@ -4,7 +4,7 @@
 
 **DaSSSH** stands for **Data and Scripts, Styles, SVG & HTML**.
 
-**DaSSSH Modules** represent a core **Ashiva** Component.
+**DaSSSH Modules** represent a core architectural pillar of **Ashiva**.
 
 **Ashiva Modules** *are* **DaSSSH Modules**. Each contain (in a single block of JSON) one, several or all of the following:
 
