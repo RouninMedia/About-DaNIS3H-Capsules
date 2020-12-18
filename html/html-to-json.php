@@ -126,15 +126,11 @@ function buildElementObject($Element_Array_3) {
 
     $Element_Object['class'] = '["'.$Element_Object['class'].'"]';
     $Element_Object['class'] = str_replace(' ', '", "', $Element_Object['class']);
+    $Element_Object['class'] = preg_replace('/".+»»»/', '"', $Element_Object['class']);
   }
 
   return $Element_Object;
 }
-
-
-// KEEP OPTIMISING MODULES
-
-// EXPERIMENT WITH TURNING ALL MODULE OUTPUT INTO JSON
 
 
 
@@ -160,6 +156,10 @@ function buildMarkupString($Markup) {
 
   $Markup_String = $Markup;
 
+  $Markup_String = preg_replace("/(\<\!\-\-)([^\>]*?\n[^\>]*?\-\-\>)/", "$1 @multiLineComment $2", $Markup_String);
+  $Markup_String = preg_replace("/(\n\s*)(?!.*?\@)(\<\!\-\-)/", "$1$2 @singleLineComment", $Markup_String);
+  $Markup_String = preg_replace("/(?!.*?\@)(\<\!\-\-)/", "$1 @endLineComment", $Markup_String);
+
   $Markup_String = str_replace('<', '^{', $Markup_String);
   $Markup_String = str_replace('>', '}^', $Markup_String);
   $Markup_String = trim($Markup_String);
@@ -181,6 +181,11 @@ function buildMarkupArray($Markup_String) {
     $Markup_Array[$i] = str_replace('=" ', '="', $Markup_Array[$i]);
     $Markup_Array[$i] = str_replace('"  ', '" ', $Markup_Array[$i]);
 
+    $Markup_Array[$i] = html_entity_decode($Markup_Array[$i], ENT_HTML5, 'UTF-8');
+  }
+
+  for ($i = (count($Markup_Array) - 1); ($i + 1) > 0; $i--) {
+
     if (preg_match('/^\s*$/', $Markup_Array[$i])) {
 
       unset($Markup_Array[$i]);
@@ -200,6 +205,42 @@ function buildJSONString($Markup_Array) {
   for ($i = 0; $i < count($Markup_Array); $i++) {
 
     switch (TRUE) {
+
+      case (substr($Markup_Array[$i], 0, 4) === '{!--') :
+
+        $Comment_Array = $Markup_Array[$i];
+
+        $Comment_Array = preg_replace('/\s*--\s*/', '--', $Comment_Array);
+        $Comment_Array = preg_replace('/@multiLineComment\s*--\s*/', '', $Comment_Array);
+        $Comment_Array = str_replace('@singleLineComment ', '', $Comment_Array);
+        $Comment_Array = str_replace('@endLineComment ', '', $Comment_Array);
+
+        $Comment_Array = explode('--', $Comment_Array);
+        array_shift($Comment_Array);
+        array_pop($Comment_Array);
+
+        $JSON_String .= ', {';
+        $JSON_String .= '"comment" : ';
+
+        if (strpos($Markup_Array[$i], '@multiLineComment') !== FALSE) {
+
+          $JSON_String .= '["'.implode('", "', $Comment_Array).'"]';
+        }
+
+        if (strpos($Markup_Array[$i], '@singleLineComment') !== FALSE) {
+
+          $JSON_String .= '["'.$Comment_Array[0].'"]';
+        }
+
+        if (strpos($Markup_Array[$i], '@endLineComment') !== FALSE) {
+
+          $JSON_String .= '"'.$Comment_Array[0].'"';
+        }
+
+        $JSON_String .= '}';
+
+        break;
+
 
       case (substr($Markup_Array[$i], 0, 2) === '{/') :
 
@@ -251,8 +292,8 @@ function buildJSONString($Markup_Array) {
 
         if (substr($Markup_Array[$i], -2, 2) === '/}') {
 
-          $JSON_String .= '"self-closing" : true, ';
-          $JSON_String .= '"elementChildren" : []}';
+          $JSON_String .= '"self-closing" : true';
+          $JSON_String .= '}';
         }
 
         else {
