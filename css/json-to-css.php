@@ -628,5 +628,12 @@ function getStyles($Modules, $ashivaNamespaceAccess = [FALSE]) {
 
   return $Stylesheet;
 }
+
+
+// GET MODULE STYLES
+if ((isset($Page)) && (isset(${$Page.'::Modules'})) && (isset(${$Page.'::ashivaNamespaceAccess'}))) {
+
+  echo getStyles(${$Page.'::Modules'}, ${$Page.'::ashivaNamespaceAccess'});
+}
           
 ?>
