@@ -1,5 +1,39 @@
 <?php
 
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+
+// HEADERS
+ob_start ("ob_gzhandler");
+header("Content-type: text/css; charset: UTF-8");
+header("Cache-Control: must-revalidate");
+$Expires_Header = "Expires: ".gmdate("D, d M Y H:i:s", time())." GMT";
+header($Expires_Header);
+
+
+// INCLUDE CORE
+require_once $_SERVER['DOCUMENT_ROOT'].'/.assets/system/core/core.php';
+
+
+// GET $PAGE
+$Page = str_replace('https://'.$_SERVER['HTTP_HOST'], '', $_SERVER['HTTP_REFERER']);
+$Page = explode('?', $Page)[0];
+$Page = substr($Page, 1, -1);
+
+switch ($Page) {
+
+  case ('') : $Page = 'scotia-beauty-homepage'; break;
+  case ('de') : $Page = 'de/scotia-beauty-startseite'; break;
+}
+
+
+// GET PAGE MANIFEST AND PAGE MODULES
+$PageManifest = json_decode(file_get_contents($_SERVER['DOCUMENT_ROOT'].'/.assets/content/pages/'.urldecode($Page).'/page.json'), TRUE);
+${$Page.'::ashivaNamespaceAccess'} = $PageManifest['Ashiva_Page_Build']['ashivaNamespaceAccess'] ?? [];
+${$Page.'::Modules'} = getModules($PageManifest['Ashiva_Page_Build']['Modules']);
+
+
+
 // FUNCTION :: SEPARATE OUT SELECTOR AND FLEXIBLE MODIFIERS
 function openSelector($Selector) {
 
