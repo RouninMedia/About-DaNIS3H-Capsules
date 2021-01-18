@@ -1,5 +1,339 @@
 <?php
 
+// FUNCTION :: SEPARATE OUT SELECTOR AND FLEXIBLE MODIFIERS
+function openSelector($Selector) {
+
+  $Selector = str_replace('‹', '[', $Selector);
+  $Selector = str_replace('›', ']', $Selector);
+  $Selector = str_replace('\'', '"', $Selector);
+  
+  $Open_Selector = json_decode($Selector, TRUE);
+
+  return $Open_Selector;
+}
+
+
+// FUNCTION :: GET FLEXIBLE MODIFIERS
+function getxMods($xMods_Set) {
+
+  $xMods = '';
+
+  for ($i = 0; $i < count($xMods_Set); $i++) {
+
+    $xMods .= '[data-°'.strtolower($xMods_Set[$i]).']';
+  }
+
+  return $xMods;
+}
+
+
+// FUNCTION :: CHECK NAMESPACE ACCESS
+function checkNamespaceAccess($Module_Name, $Substitute_ModuleName, $ashivaNamespaceAccess) {
+
+  ${'Access_to_'.$Substitute_ModuleName} = TRUE;
+
+  if ($ashivaNamespaceAccess[0] === TRUE) {
+
+    if ((isset($ashivaNamespaceAccess[1]['access'])) && (isset($ashivaNamespaceAccess[1]['access']['override']))) {
+
+      ${'Access_to_'.$Substitute_ModuleName} = $ashivaNamespaceAccess[1]['access']['override'];
+    }
+
+
+    else {
+
+      if ((isset($ashivaNamespaceAccess[1]['access'])) && (isset($ashivaNamespaceAccess[1]['access']['default']))) {
+
+        ${'Access_to_'.$Substitute_ModuleName} = $ashivaNamespaceAccess[1]['access']['default'];
+      }
+
+
+      if (isset($ashivaNamespaceAccess[1][$Module_Name])) {
+
+        if ((isset($ashivaNamespaceAccess[1][$Module_Name]['access'])) && (isset($ashivaNamespaceAccess[1][$Module_Name]['access']['override']))) {
+
+          ${'Access_to_'.$Substitute_ModuleName} = $ashivaNamespaceAccess[1][$Module_Name]['access']['override'];
+        }
+
+
+        else {
+
+          if (isset($ashivaNamespaceAccess[1][$Module_Name][$Substitute_ModuleName])) {
+
+            ${'Access_to_'.$Substitute_ModuleName} = $ashivaNamespaceAccess[1][$Module_Name][$Substitute_ModuleName];
+          }
+
+          elseif ((isset($ashivaNamespaceAccess[1][$Module_Name]['access'])) && (isset($ashivaNamespaceAccess[1][$Module_Name]['access']['default']))) {
+
+            ${'Access_to_'.$Substitute_ModuleName} = $ashivaNamespaceAccess[1][$Module_Name]['access']['default'];
+          }
+        }
+      }
+    }
+  }
+
+  return ${'Access_to_'.$Substitute_ModuleName};
+}
+
+
+// FUNCTION :: ADD SELECTORS
+function addSelectors($Module_Name, $Module_Publisher, $Namespace, $ashivaNamespaceAccess, $Raw_Selectors, $Rule_Section = FALSE) {
+
+  $Namespace_Prefix = $Namespace.'»»»';
+  $Selectors = '';
+  $Rule_Commented = FALSE;
+
+  for ($s = 0; $s < count($Raw_Selectors); $s++) {
+      
+    if ($s > 0) {
+
+      $Selectors .= ','."\n";
+
+      if ($Rule_Section === TRUE) {
+
+        $Selectors .= '  ';
+      }
+    }
+
+
+    /* "Selector",
+       ["Selector"], */
+
+    if (is_array($Raw_Selectors[$s])) {
+
+      $Selectors .= '/* ';
+      $Selector = $Raw_Selectors[$s][0];
+    }
+
+    else {
+
+      $Selector = $Raw_Selectors[$s];
+    }
+
+    if (strpos($Selector, '  ') !== FALSE) {
+
+      $Selector = preg_replace('/\s{2,}/', ' ', trim($Selector));
+    }
+
+    $Selector = str_replace('.', '.'.$Namespace_Prefix, $Selector);
+    $Selector = str_replace('#', '#'.$Namespace_Prefix, $Selector);
+
+    if (substr($Selector, 0, 3) === '‹') {
+
+      if (substr($Selector, 0, 6) === '‹\'«') {
+
+        $Selector = requestNamespace($Module_Name, $Module_Publisher, $Namespace, $Selector, $ashivaNamespaceAccess);
+      }
+
+      elseif (substr($Selector, 0, 4) === '‹[') {
+
+        $Open_Selector = openSelector($Selector);
+        $xMods_Set = $Open_Selector[0];
+        $Selector = $Open_Selector[1];
+        $Selector = getxMods($xMods_Set).' '.$Selector;
+      }
+    }
+
+    $requiresContext = TRUE;
+
+    if ((in_array(substr($Selector, 0, 1), ['#', '.'])) || (in_array(substr($Selector, 0, 5), ['body#', 'body.', 'body[', 'body ']))) {
+
+      $requiresContext = FALSE;
+    }
+
+    if ($requiresContext === TRUE) {
+
+      $Selector = (substr($Selector, 0, 8) === '[data-°') ? '.'.$Namespace.$Selector : '.'.$Namespace.' '.$Selector;
+    }
+
+    
+    if (strpos($Selector, ' */') !== FALSE) {
+
+      $Selector = str_replace(' */', '', $Selector);
+      $Rule_Commented = TRUE;
+    }
+
+    $Selectors .= $Selector;
+
+    if (is_array($Raw_Selectors[$s])) {
+
+      $Selectors .= ' */';
+    }
+  }
+
+  return [$Selectors, $Rule_Commented];
+}
+
+
+// FUNCTION :: REQUEST NAMESPACE
+function requestNamespace($Module_Name, $Module_Publisher, $Namespace, $Selector, $ashivaNamespaceAccess) {
+  
+  // STEP 1: SET UP FUNDAMENTALS
+  $Namespace_Prefix = $Namespace.'»»»';
+
+  $Selector = str_replace('‹', '[', $Selector);
+  $Selector = str_replace('›', ']', $Selector);
+  $Selector = str_replace('"', '\"', $Selector);
+  $Selector = str_replace('\'', '"', $Selector);
+
+  
+  $Selector_Array = json_decode($Selector, TRUE);
+
+  if (count($Selector_Array) > 2) {
+
+    $Substitute_Module_Address = str_replace(['«', ' ', '»'], '', $Selector_Array[0]);
+    $Substitute_xMods_Set = $Selector_Array[1];
+    $Substitute_Selector = $Selector_Array[2];
+  }
+
+  else {
+
+    $Substitute_Module_Address = str_replace(['«', ' ', '»'], '', $Selector_Array[0]);
+    $Substitute_Selector = $Selector_Array[1];
+  }
+
+
+
+  // STEP 2: ESTABLISH VARIABLES, ACCORDING TO NAMESPACE SUBSTITUTION TYPE
+  if ($Substitute_Module_Address === 'GLOBAL') {
+      
+    $Substitute_Publisher = $Substitute_ModuleName = $Substitute_Namespace = $Substitute_Module_Address;
+  }
+
+  elseif (strpos($Substitute_Module_Address, ':::') !== FALSE) {
+      
+    $Substitute_ModuleAddress_Array = explode(':::', $Substitute_Module_Address);
+    $Substitute_Publisher = $Substitute_ModuleAddress_Array[0];
+
+    $Substitute_ModuleName_Array = explode('*', $Substitute_ModuleAddress_Array[1]);
+    $Substitute_ModuleName = $Substitute_ModuleName_Array[0];
+
+    $Substitute_Namespace = url(str_replace('::', '•', $Substitute_ModuleName)).'»by»'.txt($Substitute_Publisher, 'camelCase');
+    $Substitute_Namespace_Prefix = $Substitute_Namespace.'»»»';
+  }
+
+  else {
+
+    $Console = '';
+    $Console .= '  ⚠️ Ashiva Console:'."\n\n";
+    $Console .= '  ⚠️ Issue: ashiva Namespace Reference does not begin with a Publisher Name followed by \':::\'.'."\n\n";
+    $Console .= '  ⚠️ Next Step: In «'.src($Module_Publisher).':::'.src($Module_Name).'» Style Component, edit the reference to «'.$Substitute_Module_Address.'».'."\n\n";
+    $Console .= '  ⚠️ Style Declaration: ‹\'«'.$Substitute_Module_Address.'»\', \''.$Substitute_Selector.'\'›';
+
+    $Selector = "\n/*\n\n".$Console.' */';
+
+    return $Selector;
+  }
+
+
+
+  // CHECK NAMESPACE ACCESS PERMISSIONS
+  if (checkNamespaceAccess($Module_Name, $Substitute_ModuleName, $ashivaNamespaceAccess) === TRUE) {
+
+    // GLOBAL Namespaces
+    if ($Substitute_Module_Address === 'GLOBAL') {
+          
+      // REMOVE ALL NAMESPACE PREFIXES FROM SUBSTITUTE SELECTOR
+      if (strpos($Substitute_Selector, '»by»') !== FALSE) {
+
+        $Substitute_Selector = str_replace('•', '', $Substitute_Selector);
+        $Substitute_Selector = preg_replace('/([\#\.\"])([^»\s]+»by»[^»]+»»»)+/', '$1', $Substitute_Selector);
+      }
+
+
+      // ADD EXCLUSION QUALIFIERS TO SELECTORS
+      $Substitute_Selector_with_Exclusion_Qualifiers = $Substitute_Selector;
+      $Substitute_Selector_with_Exclusion_Qualifiers_Array = explode(' ', $Substitute_Selector_with_Exclusion_Qualifiers);
+
+      for ($i = 0; $i < count($Substitute_Selector_with_Exclusion_Qualifiers_Array); $i++) {
+
+        if ($Substitute_Selector_with_Exclusion_Qualifiers_Array[$i] === '') continue;
+
+        if (in_array(substr($Substitute_Selector_with_Exclusion_Qualifiers_Array[$i], 0, 1), ['.', '#', '['])) {
+
+          $Substitute_Selector_with_Exclusion_Qualifiers_Array[$i] .= ':not([id*="»by»"]):not([class*="»by»"])';
+        }
+
+        elseif (strpos($Substitute_Selector_with_Exclusion_Qualifiers_Array[$i], '.') !== FALSE) {
+
+          $Substitute_Selector_with_Exclusion_Qualifiers_Array_Squared = explode('.', $Substitute_Selector_with_Exclusion_Qualifiers_Array[$i]);
+          $Substitute_Selector_with_Exclusion_Qualifiers_Array_Squared[0] .= ':not([id*="»by»"]):not([class*="»by»"])';
+          $Substitute_Selector_with_Exclusion_Qualifiers_Array[$i] = implode('.', $Substitute_Selector_with_Exclusion_Qualifiers_Array_Squared);
+        }
+
+        elseif (strpos($Substitute_Selector_with_Exclusion_Qualifiers_Array[$i], '#') !== FALSE) {
+
+          $Substitute_Selector_with_Exclusion_Qualifiers_Array_Squared = explode('#', $Substitute_Selector_with_Exclusion_Qualifiers_Array[$i]);
+          $Substitute_Selector_with_Exclusion_Qualifiers_Array_Squared[0] .= ':not([id*="»by»"]):not([class*="»by»"])';
+          $Substitute_Selector_with_Exclusion_Qualifiers_Array[$i] = implode('#', $Substitute_Selector_with_Exclusion_Qualifiers_Array_Squared);
+        }
+
+        else {
+
+          $Substitute_Selector_with_Exclusion_Qualifiers_Array[$i] .= ':not([id*="»by»"]):not([class*="»by»"])';
+        }
+      }
+
+      $Substitute_Selector_with_Exclusion_Qualifiers = implode(' ', $Substitute_Selector_with_Exclusion_Qualifiers_Array);
+      $Substitute_Selector = $Substitute_Selector_with_Exclusion_Qualifiers;
+
+      // ADD body > IF SELECTOR DOESN'T ALREADY BEGIN WITH body
+
+      if (substr($Substitute_Selector, 0, 4) === 'body') {
+
+        $Substitute_Selector = str_replace('body:not([id*="»by»"]):not([class*="»by»"])', 'body', $Substitute_Selector);
+      }
+
+      else {
+
+        $Substitute_Selector = 'body > '.$Substitute_Selector;
+      }
+
+      $Selector = $Substitute_Selector;
+    }
+
+
+    // All Other Namespaces
+    else {
+      
+      $Substitute_Selector = str_replace($Namespace, $Substitute_Namespace, $Substitute_Selector);
+      $Substitute_Selector = str_replace('id="', 'id="'.$Substitute_Namespace_Prefix, $Substitute_Selector);
+      $Substitute_Selector = str_replace('class="', 'class="'.$Substitute_Namespace_Prefix, $Substitute_Selector);
+      $Substitute_Selector = str_replace($Substitute_Namespace_Prefix.$Substitute_Namespace_Prefix, $Substitute_Namespace_Prefix, $Substitute_Selector);
+
+      if (isset($Substitute_xMods_Set)) {
+
+        $Substitute_Selector = getxMods($Substitute_xMods_Set).' '.$Substitute_Selector;
+      }
+
+      if (!in_array(substr($Substitute_Selector, 0, 1), ['#', '.'])) {
+
+        $Substitute_Selector = (substr($Substitute_Selector, 0, 8) === '[data-°') ? '.'.$Substitute_Namespace.$Substitute_Selector : '.'.$Substitute_Namespace.' '.$Substitute_Selector;
+      }
+
+      $Selector = $Substitute_Selector;
+    }
+  }
+      
+      
+  else {
+
+    $Console = '';
+    $Console .= '  ⚠️ Ashiva Console:'."\n\n";
+    $Console .= '  ⚠️ Issue: «'.src($Module_Publisher).':::'.src($Module_Name).'» has NO ACCESS to the «'.$Substitute_Module_Address.'» Namespace.'."\n\n";
+    $Console .= '  ⚠️ Next Step: Enable «'.src($Module_Publisher).':::'.src($Module_Name).'» access to «'.$Substitute_Module_Address.'» Namespace in this page\'s Manifest.'."\n\n";
+    $Console .= '  ⚠️ Style Declaration: ‹\'«'.$Substitute_Module_Address.'»\', \''.$Substitute_Selector.'\'›';
+
+    $Selector = "\n/*\n\n".$Console.' */';
+  }
+
+
+  $Selector = $Substitute_Selector;
+  
+  return $Selector;
+}
+
+
 function getStyles($Modules, $ashivaNamespaceAccess = [FALSE]) {
 
   $Stylesheet = '';
