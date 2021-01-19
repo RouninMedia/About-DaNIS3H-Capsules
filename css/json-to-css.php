@@ -209,7 +209,7 @@ function requestNamespace($Module_Name, $Module_Publisher, $Namespace, $Selector
   $Selector = str_replace('›', ']', $Selector);
   $Selector = str_replace('"', '\"', $Selector);
   $Selector = str_replace('\'', '"', $Selector);
-
+  $Selector = str_replace('\--', '--', $Selector);
   
   $Selector_Array = json_decode($Selector, TRUE);
 
@@ -271,7 +271,7 @@ function requestNamespace($Module_Name, $Module_Publisher, $Namespace, $Selector
       if (strpos($Substitute_Selector, '»by»') !== FALSE) {
 
         $Substitute_Selector = str_replace('•', '', $Substitute_Selector);
-        $Substitute_Selector = preg_replace('/([\#\.\"])([^»\s]+»by»[^»]+»»»)+/', '$1', $Substitute_Selector);
+        $Substitute_Selector = preg_replace('/([\#\.\"])([^»\#\.\s]+»by»[^»]+»»»)+/', '$1', $Substitute_Selector);
       }
 
 
@@ -322,8 +322,6 @@ function requestNamespace($Module_Name, $Module_Publisher, $Namespace, $Selector
 
         $Substitute_Selector = 'body > '.$Substitute_Selector;
       }
-
-      $Selector = $Substitute_Selector;
     }
 
 
@@ -344,8 +342,6 @@ function requestNamespace($Module_Name, $Module_Publisher, $Namespace, $Selector
 
         $Substitute_Selector = (substr($Substitute_Selector, 0, 8) === '[data-°') ? '.'.$Substitute_Namespace.$Substitute_Selector : '.'.$Substitute_Namespace.' '.$Substitute_Selector;
       }
-
-      $Selector = $Substitute_Selector;
     }
   }
       
@@ -360,8 +356,18 @@ function requestNamespace($Module_Name, $Module_Publisher, $Namespace, $Selector
 
     $Selector = "\n/*\n\n".$Console.' */';
   }
+  
+
+  // FINAL ADJUSTMENTS
+  $Substitute_Selector = str_replace('+:not([id*="»by»"]):not([class*="»by»"])', '+', $Substitute_Selector);
+  $Substitute_Selector = str_replace('~:not([id*="»by»"]):not([class*="»by»"])', '~', $Substitute_Selector);
+  $Substitute_Selector = str_replace('>:not([id*="»by»"]):not([class*="»by»"])', '>', $Substitute_Selector);
+
+  $Substitute_Selector = str_replace('.--', '.\--', $Substitute_Selector);
+  $Substitute_Selector = str_replace('#--', '#\--', $Substitute_Selector);
 
 
+  // RETURN SELECTOR
   $Selector = $Substitute_Selector;
   
   return $Selector;
