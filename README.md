@@ -22,4 +22,4 @@ Other technologies can be used to write Markup, Styles and Scripts.
 2) Styles can be written in *Sass*, *Less*, *Stylus* etc.
 3) Markup can be written in *Markdown*, *HAML*, *Emmet*, *Pug* etc.
 
-**However**, these other languages will ALWAYS be parsed into Javascript, CSS and HTML before being serialized as JSON.
+**However**, these other languages will *always* be parsed into Javascript, CSS and HTML before being serialized as JSON.
