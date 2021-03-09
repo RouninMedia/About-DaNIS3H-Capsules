@@ -99,9 +99,9 @@ function addStandAloneAttributes($Element_Array_2) {
     $StandAloneAttributes[$i] = $StandAloneAttributes[$i].'="'.$StandAloneAttributes[$i].'"';
   }
 
-  $Element_Array_2 = array_merge($Element_Array_2, $StandAloneAttributes);
-
-  return $Element_Array_2;
+  $Element_Array_3 = array_merge($Element_Array_2, $StandAloneAttributes);
+  
+  return $Element_Array_3;
 }
 
 
@@ -121,12 +121,17 @@ function buildElementObject($Element_Array_3) {
 
     $Element_Object[$Attribute_Name] = $Attribute_Value;
   }
-
+  
   if (isset($Element_Object['class'])) {
 
-    $Element_Object['class'] = '["'.$Element_Object['class'].'"]';
-    $Element_Object['class'] = str_replace(' ', '", "', $Element_Object['class']);
-    $Element_Object['class'] = preg_replace('/".+»»»/', '"', $Element_Object['class']);
+    $classList = explode(' ', $Element_Object['class']);
+
+    for ($i = 0; $i < count($classList); $i++) {
+
+      $classList[$i] = preg_replace('/.+»»»/', '', $classList[$i]);
+    }
+
+    $Element_Object['class'] = json_encode($classList);
   }
 
   return $Element_Object;
