@@ -311,6 +311,16 @@ function createScript($Script_Array, $Module_Info, $Code_Panel = FALSE) {
   $scriptString = preg_replace("/\(\nfunction/", "(function", $scriptString);
   $scriptString = preg_replace("/\}\n\n\)/", "})", $scriptString);
 
+  // SET UP PAGECOMPONENTS
+  $PageComponents = (isset($_GET['updatePageComponents'])) ? json_decode($_GET['updatePageComponents'], TRUE) : ['Main' => []];
+  $PageComponents['Main']['Scripts'] = $PageComponents['Main']['Scripts'] ?? TRUE;
+
+  if ($PageComponents['Main']['Scripts'] === TRUE) {
+
+    $scriptString = preg_replace("/window\.addEventListener\('load'/", "window_addEventListener('load'", $scriptString);
+    $scriptString = preg_replace("/window\.onload[^A-Za-z0-9_-]+([A-Za-z0-9_-]+)[^A-Za-z0-9_-]+/", "window_addEventListener('load', $1);", $scriptString);    
+  }
+
   if ($Code_Panel !== TRUE) {
 
     preg_match_all("/Worker\(\'([^\']+)\'/", $scriptString, $newWorkers); $newWorkers = array_unique($newWorkers[1]); sort($newWorkers);
