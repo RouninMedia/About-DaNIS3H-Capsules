@@ -157,8 +157,7 @@ function buildScript($Script_Array, $Module_Info, $indent = 0) {
 
         case ('Event_Listener') :
 
-          $scriptString .= indent($indent).$Script_Array[$h]['Event_Target'];
-          $scriptString .= (($Script_Array[$h]['Event_Target'] === 'window') && ($Script_Array[$h]['Event_Type'] === 'load')) ? '_' : '.';
+          $scriptString .= indent($indent).$Script_Array[$h]['Event_Target'].'.';
 
           if ((isset($Script_Array[$h]['Uses_OnEvent_Handler'])) && ($Script_Array[$h]['Uses_OnEvent_Handler'] === TRUE)) {
 
