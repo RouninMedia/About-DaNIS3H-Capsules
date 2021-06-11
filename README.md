@@ -1,12 +1,12 @@
-# Da3SH Modules
+# DaNIS³H Modules
 
-**Da3SH** is a project which translates all core front-end technologies (HTML5, CSS3, Javascript and SVG) into **JSON**.
+**DaNIS³H** is a project which translates all core front-end technologies (HTML5, CSS3, Javascript and SVG) into **JSON**.
 
-**Da3SH** stands for **Data and Scripts, Styles, SVG & HTML**.
+**DaNIS³H** stands for **Data and Natively Imported Scripts, Styles, SVG & HTML**.
 
-**Da3SH Modules** represent a core architectural pillar of **Ashiva**.
+**DaNIS³H Modules** represent a core architectural pillar of **Ashiva**.
 
-**Ashiva Modules** *are* **Da3SH Modules**. Each contain (in a single block of JSON) one, several or all of the following:
+**Ashiva Modules** *are* **DaNIS³H Modules**. Each contain (in a single block of JSON) one, several or all of the following:
 
 1) *Data*
 2) *Scripts (**Javascript** or **PHP**)*
