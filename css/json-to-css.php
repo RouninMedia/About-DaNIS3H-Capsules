@@ -167,7 +167,8 @@ function addSelectors($Module_Name, $Module_Publisher, $Namespace, $ashivaNamesp
         $Selector = getxMods($xMods_Set).' '.$Selector;
       }
     }
-
+    
+    // REQUIRES EXPLICIT PARENT MODULE CONTEXT
     $requiresContext = TRUE;
 
     if ((in_array(substr($Selector, 0, 1), ['#', '.'])) || (in_array(substr($Selector, 0, 5), ['body#', 'body.', 'body[', 'body ']))) {
@@ -177,7 +178,25 @@ function addSelectors($Module_Name, $Module_Publisher, $Namespace, $ashivaNamesp
 
     if ($requiresContext === TRUE) {
 
-      $Selector = (substr($Selector, 0, 8) === '[data-°') ? '.'.$Namespace.$Selector : '.'.$Namespace.' '.$Selector;
+      if (substr($Selector, 0, 8) === '[data-°') {
+
+        $Selector = '.'.$Namespace.$Selector;
+      }
+
+      elseif (substr($Selector, 0, 1) === ':') {
+
+        $Selector = '.'.$Namespace.$Selector;
+      }
+
+      elseif (strlen($Selector) < 1) {
+
+        $Selector = '.'.$Namespace.$Selector;
+      }
+      
+      else {
+      
+        $Selector = '.'.$Namespace.' '.$Selector;
+      }
     }
 
     
