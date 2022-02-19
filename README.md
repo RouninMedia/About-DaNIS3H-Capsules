@@ -1,12 +1,12 @@
-# DaNIS³H Modules
+# DaNIS³H Capsules
 
 **DaNIS³H** is a project which translates all core front-end technologies (HTML5, CSS3, Javascript and SVG) into **JSON**.
 
 **DaNIS³H** stands for **Data and Natively Imported Scripts, Styles, SVG & HTML**.
 
-**DaNIS³H Modules** represent a core architectural pillar of **Ashiva**.
+**DaNIS³H Capsules** represent a core architectural pillar of **Ashiva**.
 
-**Ashiva Modules** *are* **DaNIS³H Modules**. Each contain (in a single block of JSON) one, several or all of the following:
+If you have run across **ashivaModules**, know that these *are* **DaNIS³H Capsules**. Each contain (in a single block of JSON) one, several or all of the following:
 
 1) *Data*
 2) *Scripts (**Javascript** or **PHP**)*
