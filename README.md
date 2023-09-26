@@ -4,7 +4,9 @@
 
 **DaNIS³H** employs an environment-agnostic _meta-programming_ approach, termed **Code as Data**.
 
-**DaNIS³H** rewrites all core front-end technologies (HTML5, CSS3, Javascript and SVG) as **JSON** and outputs library-less components intended to be easily:
+In essence, **DaNIS³H** translates key front-end technologies (HTML5, CSS3, Javascript and SVG) into **JSON**.
+
+**DaNIS³H** then outputs framework-free, library-less components intended to be easily:
 
  - discoverable
  - shareable
